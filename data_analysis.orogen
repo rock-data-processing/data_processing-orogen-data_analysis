@@ -1,0 +1,78 @@
+name "data_analysis"
+
+import_types_from "base"
+
+# Add two data streams and output the difference. The input data vectors need to have the same size
+#
+task_context "Sum" do
+    # The first summand
+    input_port("summand_one", "base/VectorXd")
+    # The second summand
+    input_port("summand_two", "base/VectorXd")
+    # The sum of the two data streams as raw vector
+    output_port("sum", "base/VectorXd")
+
+    port_driven
+end
+
+# Subtract two data streams and output the difference. The input data vectors need to have the same size
+#
+task_context "Difference" do
+    # The minuend (the data that is subtracted from)
+    input_port("minuend", "base/VectorXd")
+    # The subtrahend (the data that is subtracted)
+    input_port("subtrahend", "base/VectorXd")
+    # The difference of the two data streams as raw vector
+    output_port("difference", "base/VectorXd")
+
+    port_driven
+end
+
+# Compute the 2-norm (euclidean norm) of the current sample in the input data stream.
+#
+task_context "EuclideanNorm" do
+    # The input data stream
+    input_port("input_data", "base/VectorXd")
+    # The 2-norm (euclidean norm) of the current input data sample
+    output_port("norm", "double")
+
+    port_driven
+end
+
+# Compute the mean value of the current sample in the input data stream.
+#
+task_context "Mean" do
+    # The input data stream
+    input_port("input_data", "base/VectorXd")
+    # The mean value of the current input data sample
+    output_port("mean", "double")
+
+    port_driven
+end
+
+# Compute the maximum value of the current sample in the input data stream.
+#
+task_context "MaxValue" do
+    # The input data stream
+    input_port("input_data", "base/VectorXd")
+    # The biggest value in the input data sample
+    output_port("max_value", "double")
+    # The biggest absolute value in the input data sample
+    output_port("max_absolute_value", "double")
+
+    port_driven
+end
+
+# Compute the minimum value of the current sample in the input data stream.
+#
+task_context "MinValue" do
+    # The input data stream
+    input_port("input_data", "base/VectorXd")
+    # The smallest value in the input data sample
+    output_port("min_value", "double")
+    # The smallest absolute value in the input data sample
+    output_port("min_absolute_value", "double")
+
+    port_driven
+end
+

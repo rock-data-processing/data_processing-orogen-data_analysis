@@ -1,0 +1,13 @@
+<package>
+  <description brief="Collection of components for computing statistical measures and perform simple arithmetic operations on raw data">
+  This package is supposed to support monitoring of robotic tasks, by e.g. computing simple statistical measures from continous sensor data.
+  These measures can be used in monitoring components, e.g. if norm of force vector is greater than 0, stop moving. The components are exclusively/based on raw data vectors. To      
+  convert typed sensor data into raw vectors you can use the type_to_vector component
+  </description>
+  <author>Dennis Mronga/dennis.mronga@dfki.de</author>
+  <license></license>
+  <url>http://</url>
+  <logo>http://</logo>
+  <depend package="base/cmake" />
+  <depend package="base/types" />
+</package>
