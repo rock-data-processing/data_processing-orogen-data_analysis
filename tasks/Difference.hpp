@@ -25,9 +25,8 @@ namespace data_analysis{
     class Difference : public DifferenceBase
     {
 	friend class DifferenceBase;
-    protected:
-
-
+    protected:    
+        base::VectorXd minuend, subtrahend;
 
     public:
         /** TaskContext constructor for Difference

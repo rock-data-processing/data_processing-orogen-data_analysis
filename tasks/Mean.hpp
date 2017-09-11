@@ -26,7 +26,7 @@ namespace data_analysis{
     {
 	friend class MeanBase;
     protected:
-
+        base::VectorXd input_data;
 
 
     public:

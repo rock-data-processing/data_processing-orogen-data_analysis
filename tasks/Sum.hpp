@@ -26,8 +26,7 @@ namespace data_analysis{
     {
 	friend class SumBase;
     protected:
-
-
+        base::VectorXd summand_one, summand_two;
 
     public:
         /** TaskContext constructor for Sum

@@ -1,50 +1,50 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef DATA_ANALYSIS_EUCLIDEANNORM_TASK_HPP
-#define DATA_ANALYSIS_EUCLIDEANNORM_TASK_HPP
+#ifndef DATA_ANALYSIS_ABS_TASK_HPP
+#define DATA_ANALYSIS_ABS_TASK_HPP
 
-#include "data_analysis/EuclideanNormBase.hpp"
+#include "data_analysis/AbsBase.hpp"
 
 namespace data_analysis{
 
-    /*! \class EuclideanNorm
+    /*! \class Abs
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * Compute the 2-norm (euclidean norm) of the current sample in the input data stream.
-
+     * Compute the element wise absolute value of the input data.
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','data_analysis::EuclideanNorm')
+         task('custom_task_name','data_analysis::Abs')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class EuclideanNorm : public EuclideanNormBase
+    class Abs : public AbsBase
     {
-	friend class EuclideanNormBase;
+	friend class AbsBase;
     protected:
         base::VectorXd input_data;
 
+
     public:
-        /** TaskContext constructor for EuclideanNorm
+        /** TaskContext constructor for Abs
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        EuclideanNorm(std::string const& name = "data_analysis::EuclideanNorm", TaskCore::TaskState initial_state = Stopped);
+        Abs(std::string const& name = "data_analysis::Abs", TaskCore::TaskState initial_state = Stopped);
 
-        /** TaskContext constructor for EuclideanNorm
+        /** TaskContext constructor for Abs
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        EuclideanNorm(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        Abs(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
 
-        /** Default deconstructor of EuclideanNorm
+        /** Default deconstructor of Abs
          */
-	~EuclideanNorm();
+	~Abs();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

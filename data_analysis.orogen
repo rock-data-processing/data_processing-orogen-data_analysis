@@ -28,6 +28,16 @@ task_context "Difference" do
     port_driven
 end
 
+# Compute the element wise absolute value of the input data.
+task_context "Abs" do
+    # The input data stream
+    input_port("input_data", "base/VectorXd")
+    # The vector with absolute values of the input vector entries
+    output_port("abs", "base/VectorXd")
+
+    port_driven
+end
+
 # Compute the 2-norm (euclidean norm) of the current sample in the input data stream.
 #
 task_context "EuclideanNorm" do
@@ -57,8 +67,6 @@ task_context "MaxValue" do
     input_port("input_data", "base/VectorXd")
     # The biggest value in the input data sample
     output_port("max_value", "double")
-    # The biggest absolute value in the input data sample
-    output_port("max_absolute_value", "double")
 
     port_driven
 end
@@ -70,9 +78,6 @@ task_context "MinValue" do
     input_port("input_data", "base/VectorXd")
     # The smallest value in the input data sample
     output_port("min_value", "double")
-    # The smallest absolute value in the input data sample
-    output_port("min_absolute_value", "double")
 
     port_driven
 end
-

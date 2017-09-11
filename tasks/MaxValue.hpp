@@ -25,9 +25,8 @@ namespace data_analysis{
     class MaxValue : public MaxValueBase
     {
 	friend class MaxValueBase;
-    protected:
-
-
+    protected:    
+        base::VectorXd input_data;
 
     public:
         /** TaskContext constructor for MaxValue

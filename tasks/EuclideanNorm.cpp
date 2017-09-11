@@ -5,50 +5,43 @@
 using namespace data_analysis;
 
 EuclideanNorm::EuclideanNorm(std::string const& name, TaskCore::TaskState initial_state)
-    : EuclideanNormBase(name, initial_state)
-{
+    : EuclideanNormBase(name, initial_state){
 }
 
 EuclideanNorm::EuclideanNorm(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state)
-    : EuclideanNormBase(name, engine, initial_state)
-{
+    : EuclideanNormBase(name, engine, initial_state){
 }
 
-EuclideanNorm::~EuclideanNorm()
-{
+EuclideanNorm::~EuclideanNorm(){
 }
 
-
-
-/// The following lines are template definitions for the various state machine
-// hooks defined by Orocos::RTT. See EuclideanNorm.hpp for more detailed
-// documentation about them.
-
-bool EuclideanNorm::configureHook()
-{
+bool EuclideanNorm::configureHook(){
     if (! EuclideanNormBase::configureHook())
         return false;
     return true;
 }
-bool EuclideanNorm::startHook()
-{
+
+bool EuclideanNorm::startHook(){
     if (! EuclideanNormBase::startHook())
         return false;
     return true;
 }
-void EuclideanNorm::updateHook()
-{
+
+void EuclideanNorm::updateHook(){
     EuclideanNormBase::updateHook();
+
+    if(_input_data.readNewest(input_data) == RTT::NewData)
+        _norm.write(input_data.norm());
 }
-void EuclideanNorm::errorHook()
-{
+
+void EuclideanNorm::errorHook(){
     EuclideanNormBase::errorHook();
 }
-void EuclideanNorm::stopHook()
-{
+
+void EuclideanNorm::stopHook(){
     EuclideanNormBase::stopHook();
 }
-void EuclideanNorm::cleanupHook()
-{
+
+void EuclideanNorm::cleanupHook(){
     EuclideanNormBase::cleanupHook();
 }

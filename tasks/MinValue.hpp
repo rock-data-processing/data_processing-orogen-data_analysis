@@ -26,8 +26,7 @@ namespace data_analysis{
     {
 	friend class MinValueBase;
     protected:
-
-
+        base::VectorXd input_data;
 
     public:
         /** TaskContext constructor for MinValue
