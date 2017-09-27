@@ -81,3 +81,40 @@ task_context "MinValue" do
 
     port_driven
 end
+
+# Implements a Generalized Sigmoidal function:
+#
+#        y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
+#
+# with:  A - Lower Asymptote
+#        K - Upper Asymptote
+#        B - Growth rate
+#        M - Horizontal shift
+#        Q - Initial Value
+#
+task_context "Sigmoid" do
+    # The lower Asymptote of the Sigmoid function
+    property("lower_asymptote", "double", 0.0)
+    # The upper Asymptote of the Sigmoid function
+    property("upper_asymptote", "double", 1.0)
+    # The growth rate of the Sigmoid function
+    property("growth_rate", "double", 1.0)
+    # The Horizontal shift of the Sigmoid function
+    property("hor_shift", "double", 0.0)
+    # The initial value  of the Sigmoid function
+    property("initial_value", "double", 1.0)
+
+    # The value where the Sigmoid function shall be evaluated
+    input_port("input_data", "double")
+    # The Sigmoid function value of the input
+    output_port("sigmoid", "double")
+
+    # Output the Sigmoid function to a file
+    operation("writeToFile").
+        argument("filename", "std/string").
+        argument("range_min", "double").
+        argument("range_max", "double").
+        argument("step_size", "double")
+
+    port_driven
+end
