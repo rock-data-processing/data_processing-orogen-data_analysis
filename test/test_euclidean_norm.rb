@@ -9,9 +9,8 @@ Orocos.run "data_analysis::EuclideanNorm" => "norm" do
     writer = task.input_data.writer
     reader = task.norm.reader
 
-    input_data = Types.base.VectorXd.from_a [-1,2,-3]
-
     while true
+        input_data = Types.base.VectorXd.from_a [rand(-1.0..1.0),rand(-1.0..1.0),rand(-1.0..1.0)]
         writer.write input_data
         sample = reader.read
 

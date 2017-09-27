@@ -27,6 +27,7 @@ namespace data_analysis{
 	friend class EuclideanNormBase;
     protected:
         base::VectorXd input_data;
+        double min_norm, max_norm;
 
     public:
         /** TaskContext constructor for EuclideanNorm

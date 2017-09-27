@@ -45,6 +45,10 @@ task_context "EuclideanNorm" do
     input_port("input_data", "base/VectorXd")
     # The 2-norm (euclidean norm) of the current input data sample
     output_port("norm", "double")
+    # The maximum value of the euclidean norm that ever occurred
+    output_port("max_norm", "double")
+    # The minimum value of the euclidean norm that ever occurred
+    output_port("min_norm", "double")
 
     port_driven
 end

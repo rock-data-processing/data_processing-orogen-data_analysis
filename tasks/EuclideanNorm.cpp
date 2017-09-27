@@ -1,6 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "EuclideanNorm.hpp"
+#include <limits>
 
 using namespace data_analysis;
 
@@ -18,6 +19,8 @@ EuclideanNorm::~EuclideanNorm(){
 bool EuclideanNorm::configureHook(){
     if (! EuclideanNormBase::configureHook())
         return false;
+    min_norm = INFINITY;
+    max_norm = -INFINITY;
     return true;
 }
 
@@ -30,8 +33,17 @@ bool EuclideanNorm::startHook(){
 void EuclideanNorm::updateHook(){
     EuclideanNormBase::updateHook();
 
-    if(_input_data.readNewest(input_data) == RTT::NewData)
-        _norm.write(input_data.norm());
+    if(_input_data.readNewest(input_data) == RTT::NewData){
+        double norm = input_data.norm();
+        if(norm > max_norm)
+            max_norm = norm;
+        if(norm < min_norm)
+            min_norm = norm;
+
+        _norm.write(norm);
+        _max_norm.write(max_norm);
+        _min_norm.write(min_norm);
+    }
 }
 
 void EuclideanNorm::errorHook(){
