@@ -99,6 +99,21 @@ task_context "Accumulate" do
     port_driven
 end
 
+# Compute the weighted sum of n input streams
+#
+task_context "WeightedSum" do
+    # Weighting factors of the weighted sum. The size of this vector will be equal to the number of
+    # created dynamic input ports
+    property("weights", "base/VectorXd")
+
+    dynamic_input_port /.*/, "/double"
+
+    # The weighted sum
+    output_port("weighted_sum", "double")
+
+    port_driven
+end
+
 # Implements a Generalized Sigmoidal function:
 #
 #        y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
