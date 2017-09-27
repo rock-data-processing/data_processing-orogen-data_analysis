@@ -1,5 +1,4 @@
 require "orocos"
-require "pry"
 Orocos.initialize
 
 Orocos.run "data_analysis::Sigmoid" => "sigmoid" do

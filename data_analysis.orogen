@@ -82,6 +82,19 @@ task_context "MinValue" do
     port_driven
 end
 
+# Accumulate input data in one single vector
+#
+task_context "Accumulate" do
+    # Size of the accumulation window. NaN means infinite size
+    property("window_size", "int")
+    # The input data stream
+    input_port("input_data", "double")
+    # The input data accumulated as vector
+    output_port("output_data", "base/VectorXd")
+
+    port_driven
+end
+
 # Implements a Generalized Sigmoidal function:
 #
 #        y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
