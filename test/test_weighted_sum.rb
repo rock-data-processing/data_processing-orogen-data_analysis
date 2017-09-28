@@ -16,13 +16,14 @@ Orocos.run "data_analysis::WeightedSum" => "weighted_sum" do
         input_data = [rand(), rand()]
         writer_0.write input_data[0]
         writer_1.write input_data[1]
+        sleep 1
         sample = reader.read
         if sample
-            puts "Input data: " + input_data.to_s
+            puts "Input data:      " + input_data.to_s
+            puts "Weights:         " + weights.to_s
             puts "Expected output: " + (weights[0] * input_data[0] + weights[1] * input_data[1]).to_s
-            puts "Output data: " + sample.to_s
+            puts "Output data:     " + sample.to_s
             puts "................................."
         end
-        sleep 1
     end
 end

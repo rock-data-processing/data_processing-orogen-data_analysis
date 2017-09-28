@@ -52,7 +52,6 @@ void WeightedSum::updateHook(){
 
     if(all_data){
         double weighted_sum = 0;
-        std::cout<<"Data: "<<input_ports[0]->value<<" "<<input_ports[1]->value<<std::endl;
         for(size_t i = 0; i < input_ports.size(); i++){
             weighted_sum += weights(i) * input_ports[i]->value;
             input_ports[i]->new_data = false;

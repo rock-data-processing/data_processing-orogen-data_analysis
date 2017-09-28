@@ -29,6 +29,7 @@ task_context "Difference" do
 end
 
 # Compute the element wise absolute value of the input data.
+#
 task_context "Abs" do
     # The input data stream
     input_port("input_data", "base/VectorXd")
@@ -45,10 +46,17 @@ task_context "EuclideanNorm" do
     input_port("input_data", "base/VectorXd")
     # The 2-norm (euclidean norm) of the current input data sample
     output_port("norm", "double")
-    # The maximum value of the euclidean norm that ever occurred
-    output_port("max_norm", "double")
-    # The minimum value of the euclidean norm that ever occurred
-    output_port("min_norm", "double")
+
+    port_driven
+end
+
+# Compute the root mean square of the current sample in the input data stream.
+#
+task_context "RMS" do
+    # The input data stream
+    input_port("input_data", "base/VectorXd")
+    # The 2-norm (euclidean norm) of the current input data sample
+    output_port("rms", "double")
 
     port_driven
 end
@@ -82,19 +90,6 @@ task_context "MinValue" do
     input_port("input_data", "base/VectorXd")
     # The smallest value in the input data sample
     output_port("min_value", "double")
-
-    port_driven
-end
-
-# Accumulate input data in one single vector
-#
-task_context "Accumulate" do
-    # Size of the accumulation window. NaN means infinite size
-    property("window_size", "int")
-    # The input data stream
-    input_port("input_data", "double")
-    # The input data accumulated as vector
-    output_port("output_data", "base/VectorXd")
 
     port_driven
 end
@@ -147,6 +142,21 @@ task_context "Sigmoid" do
         argument("range_min", "double").
         argument("range_max", "double").
         argument("step_size", "double")
+
+    port_driven
+end
+
+# Accumulate input data in one single vector
+#
+task_context "Accumulate" do
+    # Size of the accumulation window. NaN means infinite size
+    property("window_size", "int")
+    # The input data stream
+    input_port("input_data", "double")
+    # The input data accumulated as vector
+    output_port("output_data", "base/VectorXd")
+    # Debug output: Size of the accumulated data queue
+    output_port("queue_size", "int")
 
     port_driven
 end
