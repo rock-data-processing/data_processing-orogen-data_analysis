@@ -3,9 +3,6 @@
   This package is supposed to support monitoring of robotic tasks, by e.g. computing simple statistical measures from continous sensor data.
   These measures can be used in monitoring components, e.g. if norm of force vector is greater than 0, stop moving. The components are exclusively/based on raw data vectors. To
   convert typed sensor data into raw vectors you can use the type_to_vector component.
-
-  All tasks in the data_analysis task library are sample-based, i.e. they perform a computation only on the current incoming data sample.
-  If you are looking for accumulating tasks, like mean filter, check https://git.hb.dfki.de/dfki-control/orogen-filter_lib 
   </description>
   <author>Dennis Mronga/dennis.mronga@dfki.de</author>
   <license></license>
