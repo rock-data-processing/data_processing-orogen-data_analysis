@@ -4,38 +4,14 @@
 #define DATA_ANALYSIS_WEIGHTEDSUM_TASK_HPP
 
 #include "data_analysis/WeightedSumBase.hpp"
-#include <string>
-#include <base/Float.hpp>
 
 namespace data_analysis{
-
-    struct PortInterface{
-        PortInterface(int id, RTT::TaskContext* _task){
-            std::stringstream ss;
-            ss<<id;
-            task = _task;
-            port = new RTT::InputPort<double>("input_" + ss.str());
-            task->ports()->addEventPort(port->getName(), *port);
-            new_data = false;
-            value = base::NaN<double>();
-        }
-        ~PortInterface(){
-            task->ports()->removePort(port->getName());
-            delete port;
-        }
-
-        RTT::TaskContext *task;
-        RTT::InputPort<double>* port;
-        double value;
-        bool new_data;
-    };
 
     /*! \class WeightedSum
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
      * Compute the weighted sum of n input streams
-
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
@@ -47,29 +23,32 @@ namespace data_analysis{
      */
     class WeightedSum : public WeightedSumBase
     {
-	friend class WeightedSumBase;
+    friend class WeightedSumBase;
     protected:
+        /** Implementation from base class*/
+        virtual void process();
 
         base::VectorXd weights;
-        std::vector<PortInterface*> input_ports;
+        base::VectorXd weighted_sum;
+        std::vector<base::VectorXd> summands;
 
     public:
         /** TaskContext constructor for WeightedSum
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        WeightedSum(std::string const& name = "data_analysis::WeightedSum", TaskCore::TaskState initial_state = Stopped);
+        WeightedSum(std::string const& name = "data_analysis::WeightedSum");
 
         /** TaskContext constructor for WeightedSum
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
-         * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
+         *
          */
-        WeightedSum(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        WeightedSum(std::string const& name, RTT::ExecutionEngine* engine);
 
         /** Default deconstructor of WeightedSum
          */
-	~WeightedSum();
+        ~WeightedSum();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

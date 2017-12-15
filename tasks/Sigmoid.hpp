@@ -4,6 +4,7 @@
 #define DATA_ANALYSIS_SIGMOID_TASK_HPP
 
 #include "data_analysis/SigmoidBase.hpp"
+#include "data_analysisTypes.hpp"
 
 namespace data_analysis{
 
@@ -11,16 +12,15 @@ namespace data_analysis{
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * Implements a Generalized Sigmoidal function:
+     * Implements a Generalized Sigmoid function: y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
 
-       y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
+         with:  A - Lower Asymptote
+                K - Upper Asymptote
+                B - Growth rate
+                M - Horizontal shift
+                Q - Initial Value
 
-with:  A - Lower Asymptote
-       K - Upper Asymptote
-       B - Growth rate
-       M - Horizontal shift
-       Q - Initial Value
-
+         The size of the port_config property has to be 1  See 'type_to_vector::BaseTask' for more info
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
@@ -35,35 +35,34 @@ with:  A - Lower Asymptote
 	friend class SigmoidBase;
     protected:
 
-        double lower_asymptote;
-        double upper_asymptote;
-        double growth_rate;
-        double hor_shift;
-        double initial_value;
+        /** Output the Sigmoid function to a file*/
+        virtual void writeToFile(::std::string const & filename, double range_min, double range_max, double step_size);
+        /** Implementation from base class*/
+        virtual void process();
+        /** Compute Sigmoid function*/
+        double compute(const double data_in, const SigmoidParams params);
 
-        /* Output the Sigmoid function to a file
-         */
-        virtual void writeToFile(const std::string &filename, double range_min, double range_max, double step_size);
-
-        double compute(double data_in);
+        std::vector<SigmoidParams> sigmoid_params;
+        base::VectorXd data;
+        base::VectorXd sigmoid;
 
     public:
         /** TaskContext constructor for Sigmoid
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Sigmoid(std::string const& name = "data_analysis::Sigmoid", TaskCore::TaskState initial_state = Stopped);
+        Sigmoid(std::string const& name = "data_analysis::Sigmoid");
 
         /** TaskContext constructor for Sigmoid
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
-         * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
+         * 
          */
-        Sigmoid(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        Sigmoid(std::string const& name, RTT::ExecutionEngine* engine);
 
         /** Default deconstructor of Sigmoid
          */
-	~Sigmoid();
+        ~Sigmoid();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

@@ -6,38 +6,27 @@
 
 using namespace data_analysis;
 
-Sigmoid::Sigmoid(std::string const& name, TaskCore::TaskState initial_state)
-    : SigmoidBase(name, initial_state){
+Sigmoid::Sigmoid(std::string const& name)
+    : SigmoidBase(name){
 }
 
-Sigmoid::Sigmoid(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state)
-    : SigmoidBase(name, engine, initial_state){
+Sigmoid::Sigmoid(std::string const& name, RTT::ExecutionEngine* engine)
+    : SigmoidBase(name, engine){
 }
 
 Sigmoid::~Sigmoid(){
-}
-
-void Sigmoid::writeToFile(const std::string &filename, double range_min, double range_max, double step_size){
-    std::ofstream file;
-    file.open(filename.c_str());
-    for(double x = range_min; x <= range_max; x += step_size)
-        file << x << " " << compute(x) << std::setprecision(16) << std::endl;
-    file.close();
-}
-
-double Sigmoid::compute(double data_in){
-    return lower_asymptote + (upper_asymptote - lower_asymptote)/(1 + initial_value*exp(-growth_rate*(data_in - hor_shift)));
 }
 
 bool Sigmoid::configureHook(){
     if (! SigmoidBase::configureHook())
         return false;
 
-    lower_asymptote = _lower_asymptote.get();
-    upper_asymptote = _upper_asymptote.get();
-    growth_rate = _growth_rate.get();
-    hor_shift = _hor_shift.get();
-    initial_value = _initial_value.get();
+    if(_port_config.get().size() != 1){
+        LOG_ERROR("Port config size has to be 1!");
+        return false;
+    }
+    sigmoid_params = _sigmoid_params.get();
+    sigmoid.resize(sigmoid_params.size());
 
     return true;
 }
@@ -50,10 +39,6 @@ bool Sigmoid::startHook(){
 
 void Sigmoid::updateHook(){
     SigmoidBase::updateHook();
-
-    double data_in;
-    while(_input_data.read(data_in) == RTT::NewData)
-        _sigmoid.write(compute(data_in));
 }
 
 void Sigmoid::errorHook(){
@@ -66,4 +51,31 @@ void Sigmoid::stopHook(){
 
 void Sigmoid::cleanupHook(){
     SigmoidBase::cleanupHook();
+}
+
+void Sigmoid::process(){
+    if(isFilled(0)){
+        getVector(0, data);
+
+        if(data.size() != sigmoid_params.size())
+            throw std::runtime_error("Size mismatch. Data vector has size " + std::to_string(data.size()) + " but sigmoid params vector has size " + std::to_string(sigmoid_params.size()));
+
+        for(uint i = 0; i < data.size(); i++)
+            sigmoid(i) = compute(data(i), sigmoid_params[i]);
+
+        _sigmoid.write(sigmoid);
+    }
+}
+
+double Sigmoid::compute(const double data_in, const SigmoidParams params){
+    return params.lower_asymptote + (params.upper_asymptote - params.lower_asymptote)/(1 + params.initial_value*exp(-params.growth_rate*(data_in - params.hor_shift)));
+}
+
+void Sigmoid::writeToFile(::std::string const & filename, double range_min, double range_max, double step_size){
+    std::ofstream file;
+    file.open(filename.c_str());
+    for(double x = range_min; x <= range_max; x += step_size)
+        for(int i = 0; i < sigmoid_params.size(); i++)
+            file << x << " " << compute(x, sigmoid_params[i]) << std::setprecision(16) << std::endl;
+    file.close();
 }

@@ -10,4 +10,5 @@
   <logo>http://</logo>
   <depend package="base/cmake" />
   <depend package="base/types" />
+  <depend package="data_processing/orogen/type_to_vector" />
 </package>

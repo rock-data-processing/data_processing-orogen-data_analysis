@@ -1,12 +1,14 @@
 require "orocos"
 Orocos.initialize
+Orocos.conf.load_dir(".")
 
 Orocos.run "data_analysis::Sigmoid" => "sigmoid" do
     task = Orocos::TaskContext.get "sigmoid"
+    Orocos.conf.apply(task, ["default"])
     task.configure
     task.start
 
-    writer = task.input_data.writer
+    writer = task.double.writer
     reader = task.sigmoid.reader
 
     input_data = -3.0
@@ -23,8 +25,9 @@ Orocos.run "data_analysis::Sigmoid" => "sigmoid" do
         while !sample
             sample = reader.read_new
         end
-        output_data << sample
+        output_data << sample[0]
         input_data += step_size
+        sleep 0.1
     end
 
     print "Data from file: " + from_file.to_s + "\n\n"

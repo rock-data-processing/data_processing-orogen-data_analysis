@@ -1,0 +1,15 @@
+--- name:default
+# Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
+port_config:
+  - portname: double
+    type: /double
+    slice: ""
+    vectorIdx: 0
+
+# Parameters for the Sigmoid function of each input dimension. The size of this vector has to be equal to the input dimension
+sigmoid_params:
+    - lower_asymptote: 0.0
+      upper_asymptote: 1.0
+      growth_rate: 1.0
+      hor_shift: 0.0
+      initial_value: 1.0

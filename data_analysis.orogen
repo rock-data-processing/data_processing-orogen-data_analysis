@@ -1,162 +1,59 @@
 name "data_analysis"
 
 import_types_from "base"
+import_types_from "data_analysisTypes.hpp"
+using_task_library "type_to_vector"
 
-# Add two data streams and output the difference. The input data vectors need to have the same size
-#
-task_context "Sum" do
-    # The first summand
-    input_port("summand_one", "base/VectorXd")
-    # The second summand
-    input_port("summand_two", "base/VectorXd")
-    # The sum of the two data streams as raw vector
-    output_port("sum", "base/VectorXd")
+task_context "WeightedSum", subclasses: "type_to_vector::BaseTask" do
 
-    port_driven
-end
+    doc "Compute the weighted sum of n input streams"
 
-# Subtract two data streams and output the difference. The input data vectors need to have the same size
-#
-task_context "Difference" do
-    # The minuend (the data that is subtracted from)
-    input_port("minuend", "base/VectorXd")
-    # The subtrahend (the data that is subtracted)
-    input_port("subtrahend", "base/VectorXd")
-    # The difference of the two data streams as raw vector
-    output_port("difference", "base/VectorXd")
-
-    port_driven
-end
-
-# Compute the element wise absolute value of the input data.
-#
-task_context "Abs" do
-    # The input data stream
-    input_port("input_data", "base/VectorXd")
-    # The vector with absolute values of the input vector entries
-    output_port("abs", "base/VectorXd")
-
-    port_driven
-end
-
-# Compute the 2-norm (euclidean norm) of the current sample in the input data stream.
-#
-task_context "EuclideanNorm" do
-    # The input data stream
-    input_port("input_data", "base/VectorXd")
-    # The 2-norm (euclidean norm) of the current input data sample
-    output_port("norm", "double")
-
-    port_driven
-end
-
-# Compute the root mean square of the current sample in the input data stream.
-#
-task_context "RMS" do
-    # The input data stream
-    input_port("input_data", "base/VectorXd")
-    # The 2-norm (euclidean norm) of the current input data sample
-    output_port("rms", "double")
-
-    port_driven
-end
-
-# Compute the mean value of the current sample in the input data stream.
-#
-task_context "Mean" do
-    # The input data stream
-    input_port("input_data", "base/VectorXd")
-    # The mean value of the current input data sample
-    output_port("mean", "double")
-
-    port_driven
-end
-
-# Compute the maximum value of the current sample in the input data stream.
-#
-task_context "MaxValue" do
-    # The input data stream
-    input_port("input_data", "base/VectorXd")
-    # The biggest value in the input data sample
-    output_port("max_value", "double")
-
-    port_driven
-end
-
-# Compute the minimum value of the current sample in the input data stream.
-#
-task_context "MinValue" do
-    # The input data stream
-    input_port("input_data", "base/VectorXd")
-    # The smallest value in the input data sample
-    output_port("min_value", "double")
-
-    port_driven
-end
-
-# Compute the weighted sum of n input streams
-#
-task_context "WeightedSum" do
-    # Weighting factors of the weighted sum. The size of this vector will be equal to the number of
-    # created dynamic input ports
-    property("weights", "base/VectorXd")
-
-    dynamic_input_port /.*/, "/double"
+    property("weights", "base/VectorXd").
+        doc "Weighting factors of the weighted sum. The size of this vector has to be equal to the number of
+             dynamic input ports from port_config property. See 'type_to_vector::BaseTask' for more info"
 
     # The weighted sum
-    output_port("weighted_sum", "double")
+    output_port("weighted_sum", "base/VectorXd")
 
     port_driven
 end
 
-# Implements a Generalized Sigmoidal function:
-#
-#        y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
-#
-# with:  A - Lower Asymptote
-#        K - Upper Asymptote
-#        B - Growth rate
-#        M - Horizontal shift
-#        Q - Initial Value
-#
-task_context "Sigmoid" do
-    # The lower Asymptote of the Sigmoid function
-    property("lower_asymptote", "double", 0.0)
-    # The upper Asymptote of the Sigmoid function
-    property("upper_asymptote", "double", 1.0)
-    # The growth rate of the Sigmoid function
-    property("growth_rate", "double", 1.0)
-    # The Horizontal shift of the Sigmoid function
-    property("hor_shift", "double", 0.0)
-    # The initial value  of the Sigmoid function
-    property("initial_value", "double", 1.0)
+task_context "Norm", subclasses: "type_to_vector::BaseTask" do
 
-    # The value where the Sigmoid function shall be evaluated
-    input_port("input_data", "double")
-    # The Sigmoid function value of the input
-    output_port("sigmoid", "double")
+    doc "Compute the lp norm of the input data stream"
 
-    # Output the Sigmoid function to a file
+    property("p", "double", 2).
+        doc "The exponent of the norm. Allowed values are (p = 1 -> sum norm, p = 2 -> euclidean norm, p = inf -> inf-norm/max.-norm)"
+
+    dynamic_output_port(/^norm_\d+$/, "double")
+
+    port_driven
+end
+
+task_context "Sigmoid", subclasses: "type_to_vector::BaseTask" do
+
+    doc "Implements a Generalized Sigmoid function: y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
+
+         with:  A - Lower Asymptote
+                K - Upper Asymptote
+                B - Growth rate
+                M - Horizontal shift
+                Q - Initial Value
+
+         The size of the port_config property has to be 1  See 'type_to_vector::BaseTask' for more info"
+
+    property("sigmoid_params", "std/vector<data_analysis/SigmoidParams>").
+        doc "Parameters for the Sigmoid function of each input dimension. The size of this vector has to be equal to the input dimension"
+
+    output_port("sigmoid", "base/VectorXd").
+        doc "The Sigmoid function for all input dimensions"
+
     operation("writeToFile").
         argument("filename", "std/string").
         argument("range_min", "double").
         argument("range_max", "double").
-        argument("step_size", "double")
-
-    port_driven
-end
-
-# Accumulate input data in one single vector
-#
-task_context "Accumulate" do
-    # Size of the accumulation window. NaN means infinite size
-    property("window_size", "int")
-    # The input data stream
-    input_port("input_data", "double")
-    # The input data accumulated as vector
-    output_port("output_data", "base/VectorXd")
-    # Debug output: Size of the accumulated data queue
-    output_port("queue_size", "int")
+        argument("step_size", "double").
+        doc "Output the Sigmoid function to a file"
 
     port_driven
 end

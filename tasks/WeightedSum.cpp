@@ -4,27 +4,28 @@
 
 using namespace data_analysis;
 
-WeightedSum::WeightedSum(std::string const& name, TaskCore::TaskState initial_state)
-    : WeightedSumBase(name, initial_state){
+WeightedSum::WeightedSum(std::string const& name)
+    : WeightedSumBase(name){
 }
 
-WeightedSum::WeightedSum(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state)
-    : WeightedSumBase(name, engine, initial_state){
+WeightedSum::WeightedSum(std::string const& name, RTT::ExecutionEngine* engine)
+    : WeightedSumBase(name, engine){
 }
 
 WeightedSum::~WeightedSum(){
 }
 
-bool WeightedSum::configureHook()
-{
+bool WeightedSum::configureHook(){
     if (! WeightedSumBase::configureHook())
         return false;
 
     weights = _weights.get();
-    for(int i = 0; i <  weights.size(); i++){
-        PortInterface *pi = new PortInterface(i, this);
-        input_ports.push_back(pi);
+    if(getDataVectorCount() != weights.size()){
+        LOG_ERROR("Size of weight vector has to be same as port_config vector size. Check you config!");
+        return false;
     }
+    summands.resize(getDataVectorCount());
+
     return true;
 }
 
@@ -36,28 +37,6 @@ bool WeightedSum::startHook(){
 
 void WeightedSum::updateHook(){
     WeightedSumBase::updateHook();
-
-    for(size_t i = 0; i < input_ports.size(); i++){
-        PortInterface* pi = input_ports[i];
-        if(!pi->new_data){
-            if(pi->port->read(pi->value) == RTT::NewData){
-                pi->new_data = true;
-            }
-        }
-    }
-
-    bool all_data = true;
-    for(size_t i = 0; i < input_ports.size(); i++)
-        all_data = all_data && input_ports[i]->new_data;
-
-    if(all_data){
-        double weighted_sum = 0;
-        for(size_t i = 0; i < input_ports.size(); i++){
-            weighted_sum += weights(i) * input_ports[i]->value;
-            input_ports[i]->new_data = false;
-        }
-        _weighted_sum.write(weighted_sum);
-    }
 }
 
 void WeightedSum::errorHook(){
@@ -70,8 +49,20 @@ void WeightedSum::stopHook(){
 
 void WeightedSum::cleanupHook(){
     WeightedSumBase::cleanupHook();
-
-     for(size_t i = 0; i < input_ports.size(); i++)
-        delete input_ports[i];
-    input_ports.clear();
+    summands.clear();
 }
+
+void WeightedSum::process(){
+    weighted_sum.setZero();
+    for(int i=0; i < getDataVectorCount(); i++ ){
+        if(!isFilled(i)){
+            LOG_WARN("No data on input port %s", _port_config.get()[i].portname.c_str());
+            return;
+        }
+        getVector(i, summands[i]);
+        weighted_sum += weights(i) * summands[i];
+    }
+    _weighted_sum.write(weighted_sum);
+}
+
+

@@ -1,0 +1,18 @@
+--- name:default
+# create a debug port for a vector and sends the conversion results to it
+debug_conversion: true
+# Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
+port_config:
+  - portname: rbs_pos
+    type: /base/samples/RigidBodyState
+    slice: position
+    vectorIdx: 0
+  - portname: rbs_vel
+    type: /base/samples/RigidBodyState
+    slice: velocity
+    vectorIdx: 1
+
+# Weighting factors of the weighted sum. The size of this vector has to be equal to the number of
+#              dynamic input ports from port_config property. See 'type_to_vector::BaseTask' for more info
+weights:
+  data: [1,2]
