@@ -4,7 +4,9 @@ import_types_from "base"
 import_types_from "data_analysisTypes.hpp"
 using_task_library "type_to_vector"
 
-task_context "WeightedSum", subclasses: "type_to_vector::BaseTask" do
+task_context "WeightedSum" do
+
+    subclasses "type_to_vector::BaseTask"
 
     doc "Compute the weighted sum of n input streams"
 
@@ -18,7 +20,9 @@ task_context "WeightedSum", subclasses: "type_to_vector::BaseTask" do
     port_driven
 end
 
-task_context "Norm", subclasses: "type_to_vector::BaseTask" do
+task_context "Norm" do
+
+    subclasses "type_to_vector::BaseTask"
 
     doc "Compute the lp norm of the input data stream"
 
@@ -30,7 +34,9 @@ task_context "Norm", subclasses: "type_to_vector::BaseTask" do
     port_driven
 end
 
-task_context "Sigmoid", subclasses: "type_to_vector::BaseTask" do
+task_context "Sigmoid" do
+
+    subclasses "type_to_vector::BaseTask"
 
     doc "Implements a Generalized Sigmoid function: y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
 
