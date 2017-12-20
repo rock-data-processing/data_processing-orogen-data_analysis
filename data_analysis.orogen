@@ -37,8 +37,6 @@ end
 
 task_context "Sigmoid" do
 
-    subclasses "type_to_vector::BaseTask"
-
     doc "Implements a Generalized Sigmoid function: y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
 
          with:  A - Lower Asymptote
@@ -49,11 +47,14 @@ task_context "Sigmoid" do
 
          The size of the port_config property has to be 1  See 'type_to_vector::BaseTask' for more info"
 
-    property("sigmoid_params", "std/vector<data_analysis/SigmoidParams>").
-        doc "Parameters for the Sigmoid function of each input dimension. The size of this vector has to be equal to the input dimension"
+    property("sigmoid_params", "data_analysis/SigmoidParams").
+        doc "Parameters for the Sigmoid function"
 
-    output_port("sigmoid", "base/VectorXd").
-        doc "The Sigmoid function for all input dimensions"
+    input_port("input_data", "double").
+        doc "The input data stream"
+
+    output_port("sigmoid", "double").
+        doc "The output sigmoid function"
 
     operation("writeToFile").
         argument("filename", "std/string").

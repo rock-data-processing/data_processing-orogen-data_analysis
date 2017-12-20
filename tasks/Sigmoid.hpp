@@ -42,9 +42,9 @@ namespace data_analysis{
         /** Compute Sigmoid function*/
         double compute(const double data_in, const SigmoidParams params);
 
-        std::vector<SigmoidParams> sigmoid_params;
-        base::VectorXd data;
-        base::VectorXd sigmoid;
+        SigmoidParams sigmoid_params;
+        double data;
+        double sigmoid;
 
     public:
         /** TaskContext constructor for Sigmoid
