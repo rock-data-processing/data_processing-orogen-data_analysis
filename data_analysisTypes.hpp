@@ -8,10 +8,6 @@
  * which case you do not need this file
  */
 
-#include <limits>
-#include <Eigen/Core>
-#include <base/Eigen.hpp>
-
 namespace data_analysis {
 
 /** Parameters defining a 1-dim. Sigmoid function*/
