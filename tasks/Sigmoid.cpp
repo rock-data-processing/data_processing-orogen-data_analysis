@@ -6,12 +6,12 @@
 
 using namespace data_analysis;
 
-Sigmoid::Sigmoid(std::string const& name)
-    : SigmoidBase(name){
+Sigmoid::Sigmoid(std::string const& name, TaskCore::TaskState initial_state)
+    : SigmoidBase(name, initial_state){
 }
 
-Sigmoid::Sigmoid(std::string const& name, RTT::ExecutionEngine* engine)
-    : SigmoidBase(name, engine){
+Sigmoid::Sigmoid(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state)
+    : SigmoidBase(name, engine, initial_state){
 }
 
 Sigmoid::~Sigmoid(){
