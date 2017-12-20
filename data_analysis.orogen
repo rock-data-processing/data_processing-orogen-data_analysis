@@ -14,8 +14,8 @@ task_context "WeightedSum" do
         doc "Weighting factors of the weighted sum. The size of this vector has to be equal to the number of
              dynamic input ports from port_config property. See 'type_to_vector::BaseTask' for more info"
 
-    # The weighted sum
-    output_port("weighted_sum", "base/VectorXd")
+    output_port("weighted_sum", "base/VectorXd").
+        doc "The weighted sum of all input streams"
 
     port_driven
 end
@@ -28,8 +28,9 @@ task_context "Norm" do
 
     property("p", "double", 2).
         doc "The exponent of the norm. Allowed values are (p = 1 -> sum norm, p = 2 -> euclidean norm, p = inf -> inf-norm/max.-norm)"
-
-    dynamic_output_port(/^norm_\d+$/, "double")
+ 
+    dynamic_output_port(/^norm_\d+$/, "double").
+        doc "The norm of the input data streams. For each input port defined through the port_config property, an output port will be created"
 
     port_driven
 end
