@@ -20,7 +20,6 @@ bool NormTask::configureHook(){
         return false;
 
     p = _p.get();
-    norm_vector.resize(1);
 
     return true;
 }
@@ -45,9 +44,6 @@ void NormTask::updateHook(){
             throw std::runtime_error("Invalid norm exponent p: Should be within [1,2,Inf], but is " + std::to_string(p));
 
         _norm.write(norm);
-
-        norm_vector.setConstant(norm);
-        _norm_vector.write(norm_vector);
     }
 }
 

@@ -28,7 +28,7 @@ namespace data_analysis{
     protected:
 
         std::shared_ptr<RMS> rms_cmp;
-        base::VectorXd input_data, rms_vector;
+        base::VectorXd input_data;
 
     public:
         /** TaskContext constructor for RMSTask

@@ -26,7 +26,7 @@ namespace data_analysis{
 	friend class NormTaskBase;
     protected:
 
-        base::VectorXd input_data, norm_vector;
+        base::VectorXd input_data;
         double p;
 
     public:

@@ -27,9 +27,8 @@ namespace data_analysis{
     protected:
 
         base::VectorXd weights;
-        std::vector< RTT::InputPort<base::VectorXd>* > input_ports;
-        base::VectorXd weighted_sum;
-        std::vector<base::VectorXd> summands;
+        std::vector< RTT::InputPort<base::VectorXd>* > input_ports_vect;
+        std::vector< RTT::InputPort<double>* > input_ports_double;
 
     public:
         /** TaskContext constructor for WeightedSumTask

@@ -26,8 +26,6 @@ bool RMSTask::configureHook(){
         window_size = (int)_window_size.get();
     rms_cmp = std::make_shared<RMS>(window_size);
 
-    rms_vector.resize(1);
-
     return true;
 }
 
@@ -43,9 +41,7 @@ void RMSTask::updateHook(){
     if(_input_data.readNewest(input_data) == RTT::NewData){
         double rms = rms_cmp->update(input_data);
         _rms.write(rms);
-
-        rms_vector.setConstant(rms);
-        _rms_vector.write(rms_vector);
+        _n_data.write(rms_cmp->nData());
     }
 }
 

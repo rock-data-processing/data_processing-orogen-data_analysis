@@ -21,11 +21,14 @@ bool WeightedSumTask::configureHook(){
 
     weights = _weights.get();
     for(int i = 0; i < weights.size(); i++){
-        RTT::InputPort<base::VectorXd>* port = new RTT::InputPort<base::VectorXd>("summand_" + std::to_string(i));
-        ports()->addEventPort(port->getName(), *port);
-        input_ports.push_back(port);
+        RTT::InputPort<base::VectorXd>* port_vect = new RTT::InputPort<base::VectorXd>("vect_summand_" + std::to_string(i));
+        ports()->addEventPort(port_vect->getName(), *port_vect);
+        input_ports_vect.push_back(port_vect);
+
+        RTT::InputPort<double>* port_double = new RTT::InputPort<double>("summand_" + std::to_string(i));
+        ports()->addEventPort(port_double->getName(), *port_double);
+        input_ports_double.push_back(port_double);
     }
-    summands.resize(weights.size());
 
     return true;
 }
@@ -39,13 +42,30 @@ bool WeightedSumTask::startHook(){
 void WeightedSumTask::updateHook(){
     WeightedSumTaskBase::updateHook();
 
-    weighted_sum.setZero();
+    // handle vectors
+    base::VectorXd weighted_sum_vect;
+    weighted_sum_vect.setZero();
+    bool has_all_summands = true;
     for(int i = 0; i < weights.size(); i++){
-        if(input_ports[i]->readNewest(summands[i]) == RTT::NoData)
-            return;
-        weighted_sum += weights(i)*summands[i];
+        base::VectorXd summand;
+        if(input_ports_vect[i]->readNewest(summand) == RTT::NoData)
+            has_all_summands = false;
+        weighted_sum_vect += weights(i)*summand;
     }
-    _weighted_sum.write(weighted_sum);
+    if(has_all_summands)
+        _weighted_sum_vect.write(weighted_sum_vect);
+
+    // handle doubles
+    double weighted_sum = 0;
+    has_all_summands = true;
+    for(int i = 0; i < weights.size(); i++){
+        double summand;
+        if(input_ports_double[i]->readNewest(summand) == RTT::NoData)
+            has_all_summands = false;
+        weighted_sum += weights(i)*summand;
+    }
+    if(has_all_summands)
+        _weighted_sum.write(weighted_sum);
 }
 
 void WeightedSumTask::errorHook(){
@@ -58,9 +78,14 @@ void WeightedSumTask::stopHook(){
 
 void WeightedSumTask::cleanupHook(){
     WeightedSumTaskBase::cleanupHook();
-    for(auto p : input_ports){
+    for(auto p : input_ports_vect){
         ports()->removePort(p->getName());
         delete p;
     }
-    input_ports.clear();
+    input_ports_double.clear();
+    for(auto p : input_ports_double){
+        ports()->removePort(p->getName());
+        delete p;
+    }
+    input_ports_double.clear();
 }

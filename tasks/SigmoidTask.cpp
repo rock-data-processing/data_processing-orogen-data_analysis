@@ -15,12 +15,12 @@ SigmoidTask::SigmoidTask(std::string const& name, RTT::ExecutionEngine* engine, 
 SigmoidTask::~SigmoidTask(){
 }
 
-void SigmoidTask::writeToFile(::std::string const & filename, double range_min, double range_max, double step_size){
-}
-
 bool SigmoidTask::configureHook(){
     if (! SigmoidTaskBase::configureHook())
         return false;
+
+    sigmoid.setParams(_sigmoid_params.get());
+
     return true;
 }
 
@@ -32,6 +32,10 @@ bool SigmoidTask::startHook(){
 
 void SigmoidTask::updateHook(){
     SigmoidTaskBase::updateHook();
+
+    double input_data;
+    if(_input_data.readNewest(input_data) == RTT::NewData)
+        _sigmoid.write(sigmoid.compute(input_data));
 }
 
 void SigmoidTask::errorHook(){
@@ -44,4 +48,8 @@ void SigmoidTask::stopHook(){
 
 void SigmoidTask::cleanupHook(){
     SigmoidTaskBase::cleanupHook();
+}
+
+void SigmoidTask::writeToFile(::std::string const & filename, double range_min, double range_max, double step_size){
+    sigmoid.writeToFile(filename, range_min, range_max, step_size);
 }

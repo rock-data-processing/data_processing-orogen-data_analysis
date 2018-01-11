@@ -29,7 +29,7 @@ namespace data_analysis{
         std::vector< RTT::OutputPort<base::VectorXd>* > output_ports;
         std::vector<base::VectorXd> data;
 
-        virtual void Process();
+        virtual void process();
 
     public:
         /** TaskContext constructor for ToRaw

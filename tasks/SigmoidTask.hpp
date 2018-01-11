@@ -35,6 +35,8 @@ namespace data_analysis{
 	friend class SigmoidTaskBase;
     protected:
 
+        Sigmoid sigmoid;
+
         /* Output the Sigmoid function to a file
          */
         virtual void writeToFile(::std::string const & filename, double range_min, double range_max, double step_size);
@@ -55,7 +57,7 @@ namespace data_analysis{
 
         /** Default deconstructor of SigmoidTask
          */
-	~SigmoidTask();
+        ~SigmoidTask();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

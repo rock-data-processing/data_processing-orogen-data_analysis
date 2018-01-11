@@ -1,14 +1,21 @@
 require "orocos"
 Orocos.initialize
-Orocos.conf.load_dir(".")
+Orocos.load_typekit("data_analysis")
 
-Orocos.run "data_analysis::Sigmoid" => "sigmoid" do
+Orocos.run "data_analysis::SigmoidTask" => "sigmoid" do
     task = Orocos::TaskContext.get "sigmoid"
-    Orocos.conf.apply(task, ["default"])
+    params = Types.data_analysis.SigmoidParams.new
+    params.lower_asymptote = 0.0
+    params.upper_asymptote        = 1.0
+    params.growth_rate            = 1.0
+    params.hor_shift              = 0.0
+    params.initial_value          = 1.0
+    task.sigmoid_params = params
+
     task.configure
     task.start
 
-    writer = task.double.writer
+    writer = task.input_data.writer
     reader = task.sigmoid.reader
 
     input_data = -3.0
@@ -25,7 +32,7 @@ Orocos.run "data_analysis::Sigmoid" => "sigmoid" do
         while !sample
             sample = reader.read_new
         end
-        output_data << sample[0]
+        output_data << sample
         input_data += step_size
         sleep 0.1
     end

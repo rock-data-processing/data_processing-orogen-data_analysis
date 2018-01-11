@@ -4,6 +4,7 @@
 #define DATA_ANALYSIS_MINMAXTASK_TASK_HPP
 
 #include "data_analysis/MinMaxTaskBase.hpp"
+#include <data_analysis/min_max.hpp>
 
 namespace data_analysis{
 
@@ -26,7 +27,8 @@ namespace data_analysis{
 	friend class MinMaxTaskBase;
     protected:
 
-
+        base::VectorXd input_data;
+        std::shared_ptr<MinMax> min_max;
 
     public:
         /** TaskContext constructor for MinMaxTask
@@ -44,7 +46,7 @@ namespace data_analysis{
 
         /** Default deconstructor of MinMaxTask
          */
-	~MinMaxTask();
+        ~MinMaxTask();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

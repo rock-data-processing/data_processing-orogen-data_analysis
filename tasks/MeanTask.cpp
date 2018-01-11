@@ -42,6 +42,8 @@ void MeanTask::updateHook(){
         mean_cmp->update(input_data, mean, std_dev);
         _mean.write(mean);
         _std_dev.write(std_dev);
+        _mean_element.write(input_data.mean());
+        _n_data.write(mean_cmp->nData());
     }
 }
 

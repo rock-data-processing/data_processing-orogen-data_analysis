@@ -1,37 +1,52 @@
 require "orocos"
 Orocos.initialize
-Orocos.conf.load_dir(".")
 
-Orocos.run "data_analysis::WeightedSum" => "weighted_sum" do
+Orocos.run "data_analysis::WeightedSumTask" => "weighted_sum" do
     task = Orocos::TaskContext.get "weighted_sum"
-    Orocos.conf.apply(task, ["default"])
+    task.weights = Types.base.VectorXd.from_a [1,2]
     task.configure
     task.start
 
-    writer_1 = task.rbs_pos.writer
-    writer_2 = task.rbs_vel.writer
+    writer_0 = task.summand_0.writer
+    writer_1 = task.summand_1.writer
 
-    input_1 = Types.base.samples.RigidBodyState.new
-    input_1.position = Types.base.Vector3d.new(1,2,3)
+    writer_2 = task.vect_summand_0.writer
+    writer_3 = task.vect_summand_1.writer
 
-    input_2 = Types.base.samples.RigidBodyState.new
-    input_2.velocity = Types.base.Vector3d.new(4,5,6)
+    input_0 = 1
+    input_1 = 2
+    input_2 = Types.base.VectorXd.from_a [1,2]
+    input_3 = Types.base.VectorXd.from_a [3,4]
 
-    reader = task.weighted_sum.reader
+    reader_0 = task.weighted_sum.reader
+    reader_1 = task.weighted_sum_vect.reader
+
+    puts "Press Ctrl-C to exit"
 
     while true
-        input_1.time = Types.base.Time.now
-        input_2.time = Types.base.Time.now
+        writer_0.write input_0
         writer_1.write input_1
-        writer_2.write input_2
         sleep 1
-        sample = reader.read
+        sample = reader_0.read
         if sample
-            puts "Input data 1:    " + input_1.position.data.to_s
-            puts "Input data 2:    " + input_2.velocity.data.to_s
+            puts "Input data 1:    " + input_0.to_s
+            puts "Input data 2:    " + input_1.to_s
+            puts "Weights:         " + task.weights.to_s
+            puts "Output data:     " + sample.to_s
+            puts
+        end
+
+        writer_2.write input_2
+        writer_3.write input_3
+        sleep 0.5
+        sample = reader_1.read
+        if sample
+            puts "Input vector data 1:    " + input_2.to_s
+            puts "Input vector data 2:    " + input_3.to_s
             puts "Weights:         " + task.weights.to_s
             puts "Output data:     " + sample.to_s
             puts "................................."
         end
+        sleep 1
     end
 end

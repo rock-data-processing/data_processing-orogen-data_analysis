@@ -24,7 +24,7 @@ bool ToRaw::configureHook()
         return false;
 
     for(auto p : _port_config.get()){
-        RTT::OutputPort<base::VectorXd>* port = new RTT::OutputPort<base::VectorXd>(p.portname + "_raw");
+        RTT::OutputPort<base::VectorXd>* port = new RTT::OutputPort<base::VectorXd>("raw_" + p.portname);
         ports()->addPort(port->getName(), *port);
         output_ports.push_back(port);
     }
@@ -67,7 +67,7 @@ void ToRaw::cleanupHook()
     output_ports.clear();
 }
 
-void ToRaw::Process(){
+void ToRaw::process(){
     for(size_t i = 0; i < output_ports.size(); i++){
         if(isFilled(i)){
             getVector(i, data[i]);

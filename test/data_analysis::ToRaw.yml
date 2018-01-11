@@ -1,8 +1,6 @@
 --- name:default
 # create a debug port for a vector and sends the conversion results to it
 debug_conversion: true
-# The exponent of the norm. Allowed values are (p = 1 -> sum norm, p = 2 -> euclidean norm, p = inf -> inf-norm/max.-norm)
-p: 2
 # Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
 port_config:
   - portname: rbs
