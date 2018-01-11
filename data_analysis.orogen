@@ -48,6 +48,9 @@ task_context "RMSTask" do
     input_port("input_data", "base/VectorXd").
         doc "The raw input data stream"
 
+    output_port("norm", "double").
+        doc "The 2-norm of the current input sample."
+
     output_port("rms", "double")
         doc "The rms value of the input data stream."
 

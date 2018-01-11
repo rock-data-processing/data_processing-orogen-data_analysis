@@ -41,6 +41,7 @@ void RMSTask::updateHook(){
     if(_input_data.readNewest(input_data) == RTT::NewData){
         double rms = rms_cmp->update(input_data);
         _rms.write(rms);
+        _norm.write(input_data.norm());
         _n_data.write(rms_cmp->nData());
     }
 }
