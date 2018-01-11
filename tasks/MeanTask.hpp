@@ -30,19 +30,21 @@ namespace data_analysis{
         std::shared_ptr<Mean> mean_cmp;
         base::VectorXd input_data, mean, std_dev;
 
+        virtual void process();
+
     public:
         /** TaskContext constructor for MeanTask
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MeanTask(std::string const& name = "data_analysis::MeanTask", TaskCore::TaskState initial_state = Stopped);
+        MeanTask(std::string const& name = "data_analysis::MeanTask");
 
         /** TaskContext constructor for MeanTask
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        MeanTask(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        MeanTask(std::string const& name, RTT::ExecutionEngine* engine);
 
         /** Default deconstructor of MeanTask
          */

@@ -1,15 +1,16 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "NormTask.hpp"
+#include <base-logging/Logging.hpp>
 
 using namespace data_analysis;
 
-NormTask::NormTask(std::string const& name, TaskCore::TaskState initial_state)
-    : NormTaskBase(name, initial_state){
+NormTask::NormTask(std::string const& name)
+    : NormTaskBase(name){
 }
 
-NormTask::NormTask(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state)
-    : NormTaskBase(name, engine, initial_state){
+NormTask::NormTask(std::string const& name, RTT::ExecutionEngine* engine)
+    : NormTaskBase(name, engine){
 }
 
 NormTask::~NormTask(){
@@ -18,6 +19,11 @@ NormTask::~NormTask(){
 bool NormTask::configureHook(){
     if (! NormTaskBase::configureHook())
         return false;
+
+    if(_port_config.get().size() != 1){
+        LOG_ERROR("Size of port_config property has to be 1 for this task!");
+        return false;
+    }
 
     p = _p.get();
 
@@ -32,7 +38,23 @@ bool NormTask::startHook(){
 
 void NormTask::updateHook(){
     NormTaskBase::updateHook();
-    if(_input_data.readNewest(input_data) == RTT::NewData){
+}
+
+void NormTask::errorHook(){
+    NormTaskBase::errorHook();
+}
+
+void NormTask::stopHook(){
+    NormTaskBase::stopHook();
+}
+
+void NormTask::cleanupHook(){
+    NormTaskBase::cleanupHook();
+}
+
+void NormTask::process(){
+    if(isFilled(0)){
+        getVector(0,input_data);
         double norm;
         if(p == 1) // Sum norm
             norm = input_data.lpNorm<1>();
@@ -47,14 +69,3 @@ void NormTask::updateHook(){
     }
 }
 
-void NormTask::errorHook(){
-    NormTaskBase::errorHook();
-}
-
-void NormTask::stopHook(){
-    NormTaskBase::stopHook();
-}
-
-void NormTask::cleanupHook(){
-    NormTaskBase::cleanupHook();
-}

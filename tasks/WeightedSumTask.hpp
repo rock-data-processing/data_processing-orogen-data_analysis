@@ -27,22 +27,23 @@ namespace data_analysis{
     protected:
 
         base::VectorXd weights;
-        std::vector< RTT::InputPort<base::VectorXd>* > input_ports_vect;
-        std::vector< RTT::InputPort<double>* > input_ports_double;
+        std::vector< RTT::InputPort<base::VectorXd>* > input_ports;
+
+        virtual void process();
 
     public:
         /** TaskContext constructor for WeightedSumTask
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        WeightedSumTask(std::string const& name = "data_analysis::WeightedSumTask", TaskCore::TaskState initial_state = Stopped);
+        WeightedSumTask(std::string const& name = "data_analysis::WeightedSumTask");
 
         /** TaskContext constructor for WeightedSumTask
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        WeightedSumTask(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        WeightedSumTask(std::string const& name, RTT::ExecutionEngine* engine);
 
         /** Default deconstructor of WeightedSumTask
          */

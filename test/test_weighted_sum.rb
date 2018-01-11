@@ -1,5 +1,6 @@
 require "orocos"
 Orocos.initialize
+Orocos.conf.load_dir("config")
 
 Orocos.run "data_analysis::WeightedSumTask" => "weighted_sum" do
     task = Orocos::TaskContext.get "weighted_sum"

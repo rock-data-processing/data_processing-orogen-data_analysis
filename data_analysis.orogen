@@ -5,19 +5,9 @@ import_types_from "data_analysis/sigmoid.hpp"
 using_library "data_analysis"
 using_task_library "type_to_vector"
 
-task_context "ToRaw" do
+task_context "NormTask" do
 
     subclasses "type_to_vector::BaseTask"
-
-    doc "Convert typed into data into raw data stream and write it as base/VectorXd"
-
-    dynamic_output_port(/^raw_\d+$/, "base/VectorXd").
-        doc "The raw output data for each input"
-
-    port_driven
-end
-
-task_context "NormTask" do
 
     doc "Compute the lp norm of the input data stream"
 
@@ -27,9 +17,6 @@ task_context "NormTask" do
               p = 2 -> euclidean norm
               p = inf -> inf-norm/max.-norm"
 
-    input_port("input_data", "base/VectorXd").
-        doc "The raw input data stream"
-
     output_port("norm", "double").
         doc "The norm of the input data stream."
 
@@ -38,15 +25,14 @@ end
 
 task_context "RMSTask" do
 
+    subclasses "type_to_vector::BaseTask"
+
     doc "Compute the RMS of the input data stream:
 
          y = sqrt( (1/n) sum_1^n (x_n*x_n) )"
 
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
-
-    input_port("input_data", "base/VectorXd").
-        doc "The raw input data stream"
 
     output_port("norm", "double").
         doc "The 2-norm of the current input sample."
@@ -62,13 +48,12 @@ end
 
 task_context "MeanTask" do
 
+    subclasses "type_to_vector::BaseTask"
+
     doc "Compute mean and std. dev. of the input data stream"
 
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
-
-    input_port("input_data", "base/VectorXd").
-        doc "The raw input data stream"
 
     output_port("mean_element", "double").
         doc "The mean of the last input sample."
@@ -87,13 +72,12 @@ end
 
 task_context "MinMaxTask" do
 
+    subclasses "type_to_vector::BaseTask"
+
     doc "Output the min value of the each element of the input data stream"
 
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
-
-    input_port("input_data", "base/VectorXd").
-        doc "The raw input data stream"
 
     output_port("min", "double")
         doc "The min. value of all elements and all data vectors in the filter window"
@@ -112,21 +96,14 @@ end
 
 task_context "WeightedSumTask" do
 
+    subclasses "type_to_vector::BaseTask"
+
     doc "Compute the weighted sum of n input streams"
 
     property("weights", "base/VectorXd").
-        doc "Weighting factors of the weighted sum. One dynamic input port will be created for each entry"
+        doc "Weighting factors of the weighted sum. Size has to be same as size of port_config vector"
 
-    dynamic_input_port(/^vect_summand_\d+$/, "base/VectorXd").
-       doc "The input ports for all summands (one for each weight)"
-
-    dynamic_input_port(/^summand_\d+$/, "double").
-       doc "The input ports for all summands (one for each weight)"
-
-    output_port("weighted_sum_vect", "base/VectorXd").
-        doc "The weighted sum of all input streams"
-
-    output_port("weighted_sum", "double").
+    output_port("weighted_sum", "base/VectorXd").
         doc "The weighted sum of all input streams"
 
     port_driven

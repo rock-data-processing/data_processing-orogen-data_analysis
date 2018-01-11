@@ -30,19 +30,21 @@ namespace data_analysis{
         std::shared_ptr<RMS> rms_cmp;
         base::VectorXd input_data;
 
+        virtual void process();
+
     public:
         /** TaskContext constructor for RMSTask
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        RMSTask(std::string const& name = "data_analysis::RMSTask", TaskCore::TaskState initial_state = Stopped);
+        RMSTask(std::string const& name = "data_analysis::RMSTask");
 
         /** TaskContext constructor for RMSTask
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        RMSTask(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        RMSTask(std::string const& name, RTT::ExecutionEngine* engine);
 
         /** Default deconstructor of RMSTask
          */
