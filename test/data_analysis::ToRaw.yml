@@ -1,9 +1,0 @@
---- name:default
-# create a debug port for a vector and sends the conversion results to it
-debug_conversion: true
-# Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
-port_config:
-  - portname: rbs
-    type: /base/samples/RigidBodyState
-    slice: position
-    vectorIdx: 0
