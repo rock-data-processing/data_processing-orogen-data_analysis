@@ -1,0 +1,32 @@
+--- name:default
+# maximum latency, in seconds, of the stream aligner. The aligner will start dropping samples if the difference between the last output and last input is greater than this
+aggregator_max_latency: 0.1
+# creates place information during conversion
+create_places: false
+# create a debug port for a vector and sends the conversion results to it
+debug_conversion: true
+# reference time to be used for not time stamped data
+start_time:
+  microseconds: 0
+# minimum system time in s between two status readings
+stream_aligner_status_period: 1.0
+# space seperated list of valid timestamp fields
+time_fields: time
+
+--- name:rbs
+# Weighting factors of the weighted sum. Size has to be same as size of port_config vector
+weights:
+  data: [1,2]
+# Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
+port_config:
+# Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
+port_config:
+    - portname: rbs_1
+      type: /base/samples/RigidBodyState
+      slice: position.data.[0-2]
+      vectorIdx: 0
+
+    - portname: rbs_2
+      type: /base/samples/RigidBodyState
+      slice: position.data.[0-2]
+      vectorIdx: 0
