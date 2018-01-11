@@ -2,6 +2,7 @@ name "data_analysis"
 
 import_types_from "base"
 import_types_from "data_analysisTypes.hpp"
+using_library "data_analysis"
 using_task_library "type_to_vector"
 
 task_context "ToRaw" do
@@ -16,7 +17,7 @@ task_context "ToRaw" do
     port_driven
 end
 
-task_context "Norm" do
+task_context "NormTask" do
 
     doc "Compute the lp norm of the input data stream"
 
@@ -38,7 +39,7 @@ task_context "Norm" do
     port_driven
 end
 
-task_context "RMS" do
+task_context "RMSTask" do
 
     doc "Compute the RMS of the input data stream:
 
@@ -59,7 +60,7 @@ task_context "RMS" do
     port_driven
 end
 
-task_context "Mean" do
+task_context "MeanTask" do
 
     doc "Compute mean and std. dev. of the input data stream"
 
@@ -72,10 +73,13 @@ task_context "Mean" do
     output_port("mean", "base/VectorXd").
         doc "The mean of the input data stream."
 
+    output_port("std_dev", "base/VectorXd").
+        doc "The standard deviation of the input data stream."
+
     port_driven
 end
 
-task_context "MinMax" do
+task_context "MinMaxTask" do
 
     doc "Output the min or max value of the each element of the input data stream"
 
@@ -94,7 +98,7 @@ task_context "MinMax" do
     port_driven
 end
 
-task_context "WeightedSum" do
+task_context "WeightedSumTask" do
 
     doc "Compute the weighted sum of n input streams"
 
@@ -110,7 +114,7 @@ task_context "WeightedSum" do
     port_driven
 end
 
-task_context "Sigmoid" do
+task_context "SigmoidTask" do
 
     doc "Implements a Generalized Sigmoid function: y = A + (K - A) / (1 + Q*exp(-B*(t - M)))
 

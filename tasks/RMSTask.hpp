@@ -1,54 +1,52 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef DATA_ANALYSIS_MEAN_TASK_HPP
-#define DATA_ANALYSIS_MEAN_TASK_HPP
+#ifndef DATA_ANALYSIS_RMSTASK_TASK_HPP
+#define DATA_ANALYSIS_RMSTASK_TASK_HPP
 
-#include "data_analysis/MeanBase.hpp"
+#include "data_analysis/RMSTaskBase.hpp"
+#include <data_analysis/rms.hpp>
 
 namespace data_analysis{
 
-    /*! \class Mean
+    /*! \class RMSTask
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * The standard deviation of the input data stream.
+     * The rms value of the input data stream as a single entry vector.
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','data_analysis::Mean')
+         task('custom_task_name','data_analysis::RMSTask')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class Mean : public MeanBase
+    class RMSTask : public RMSTaskBase
     {
-	friend class MeanBase;
+	friend class RMSTaskBase;
     protected:
 
-        base::VectorXd input_data;
-        base::VectorXd sum;
-        std::vector<base::VectorXd> queue;
-        int window_size;
-        int n_data;
+        std::shared_ptr<RMS> rms_cmp;
+        base::VectorXd input_data, rms_vector;
 
     public:
-        /** TaskContext constructor for Mean
+        /** TaskContext constructor for RMSTask
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Mean(std::string const& name = "data_analysis::Mean", TaskCore::TaskState initial_state = Stopped);
+        RMSTask(std::string const& name = "data_analysis::RMSTask", TaskCore::TaskState initial_state = Stopped);
 
-        /** TaskContext constructor for Mean
+        /** TaskContext constructor for RMSTask
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Mean(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        RMSTask(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
 
-        /** Default deconstructor of Mean
+        /** Default deconstructor of RMSTask
          */
-	~Mean();
+        ~RMSTask();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
