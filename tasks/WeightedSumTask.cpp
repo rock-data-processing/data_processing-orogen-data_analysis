@@ -53,7 +53,6 @@ void WeightedSumTask::cleanupHook(){
 
 void WeightedSumTask::process(){
     // handle vectors
-    base::VectorXd weighted_sum;
     weighted_sum.setZero();
     bool has_all_summands = true;
     for(int i = 0; i < weights.size(); i++){
@@ -61,6 +60,15 @@ void WeightedSumTask::process(){
             has_all_summands = false;
         base::VectorXd summand;
         getVector(i,summand);
+
+        if(weighted_sum.size() == 0){
+            weighted_sum.resize(summand.size());
+            weighted_sum.setZero();
+        }
+
+        if(weighted_sum.size() != summand.size())
+            throw std::runtime_error("Summand " + std::to_string(i) + " has size " + std::to_string(summand.size()) + " but should have size " + std::to_string(weighted_sum.size()));
+
         weighted_sum += weights(i)*summand;
     }
     if(has_all_summands)

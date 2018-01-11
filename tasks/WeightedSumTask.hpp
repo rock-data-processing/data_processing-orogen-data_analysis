@@ -28,6 +28,7 @@ namespace data_analysis{
 
         base::VectorXd weights;
         std::vector< RTT::InputPort<base::VectorXd>* > input_ports;
+        base::VectorXd weighted_sum;
 
         virtual void process();
 
