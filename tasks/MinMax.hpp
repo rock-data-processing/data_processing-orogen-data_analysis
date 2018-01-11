@@ -1,50 +1,50 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef DATA_ANALYSIS_NORM_TASK_HPP
-#define DATA_ANALYSIS_NORM_TASK_HPP
+#ifndef DATA_ANALYSIS_MINMAX_TASK_HPP
+#define DATA_ANALYSIS_MINMAX_TASK_HPP
 
-#include "data_analysis/NormBase.hpp"
+#include "data_analysis/MinMaxBase.hpp"
 
 namespace data_analysis{
 
-    /*! \class Norm
+    /*! \class MinMax
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * Compute the lp norm of the input data stream
+     * The max value of the input data stream.
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','data_analysis::Norm')
+         task('custom_task_name','data_analysis::MinMax')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class Norm : public NormBase
+    class MinMax : public MinMaxBase
     {
-	friend class NormBase;
+	friend class MinMaxBase;
     protected:
-        base::VectorXd input_data, norm_vector;
-        double p;
+
+
 
     public:
-        /** TaskContext constructor for Norm
+        /** TaskContext constructor for MinMax
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Norm(std::string const& name = "data_analysis::Norm",  TaskCore::TaskState initial_state = Stopped);
+        MinMax(std::string const& name = "data_analysis::MinMax", TaskCore::TaskState initial_state = Stopped);
 
-        /** TaskContext constructor for Norm
+        /** TaskContext constructor for MinMax
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
-         * 
+         * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Norm(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        MinMax(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
 
-        /** Default deconstructor of Norm
+        /** Default deconstructor of MinMax
          */
-	~Norm();
+	~MinMax();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

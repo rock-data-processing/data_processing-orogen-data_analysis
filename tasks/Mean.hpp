@@ -1,50 +1,54 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef DATA_ANALYSIS_NORM_TASK_HPP
-#define DATA_ANALYSIS_NORM_TASK_HPP
+#ifndef DATA_ANALYSIS_MEAN_TASK_HPP
+#define DATA_ANALYSIS_MEAN_TASK_HPP
 
-#include "data_analysis/NormBase.hpp"
+#include "data_analysis/MeanBase.hpp"
 
 namespace data_analysis{
 
-    /*! \class Norm
+    /*! \class Mean
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * Compute the lp norm of the input data stream
+     * The standard deviation of the input data stream.
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','data_analysis::Norm')
+         task('custom_task_name','data_analysis::Mean')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class Norm : public NormBase
+    class Mean : public MeanBase
     {
-	friend class NormBase;
+	friend class MeanBase;
     protected:
-        base::VectorXd input_data, norm_vector;
-        double p;
+
+        base::VectorXd input_data;
+        base::VectorXd sum;
+        std::vector<base::VectorXd> queue;
+        int window_size;
+        int n_data;
 
     public:
-        /** TaskContext constructor for Norm
+        /** TaskContext constructor for Mean
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Norm(std::string const& name = "data_analysis::Norm",  TaskCore::TaskState initial_state = Stopped);
+        Mean(std::string const& name = "data_analysis::Mean", TaskCore::TaskState initial_state = Stopped);
 
-        /** TaskContext constructor for Norm
+        /** TaskContext constructor for Mean
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
-         * 
+         * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Norm(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        Mean(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
 
-        /** Default deconstructor of Norm
+        /** Default deconstructor of Mean
          */
-	~Norm();
+	~Mean();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

@@ -1,50 +1,53 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.hpp */
 
-#ifndef DATA_ANALYSIS_NORM_TASK_HPP
-#define DATA_ANALYSIS_NORM_TASK_HPP
+#ifndef DATA_ANALYSIS_TORAW_TASK_HPP
+#define DATA_ANALYSIS_TORAW_TASK_HPP
 
-#include "data_analysis/NormBase.hpp"
+#include "data_analysis/ToRawBase.hpp"
 
 namespace data_analysis{
 
-    /*! \class Norm
+    /*! \class ToRaw
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
      * In order to modify the interfaces you should (re)use oroGen and rely on the associated workflow.
-     * Compute the lp norm of the input data stream
+     * Convert typed into data into raw data stream and write it as base/VectorXd
      * \details
      * The name of a TaskContext is primarily defined via:
      \verbatim
      deployment 'deployment_name'
-         task('custom_task_name','data_analysis::Norm')
+         task('custom_task_name','data_analysis::ToRaw')
      end
      \endverbatim
      *  It can be dynamically adapted when the deployment is called with a prefix argument.
      */
-    class Norm : public NormBase
+    class ToRaw : public ToRawBase
     {
-	friend class NormBase;
+	friend class ToRawBase;
     protected:
-        base::VectorXd input_data, norm_vector;
-        double p;
+
+        std::vector< RTT::OutputPort<base::VectorXd>* > output_ports;
+        std::vector<base::VectorXd> data;
+
+        virtual void Process();
 
     public:
-        /** TaskContext constructor for Norm
+        /** TaskContext constructor for ToRaw
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.
          * \param initial_state The initial TaskState of the TaskContext. Default is Stopped state.
          */
-        Norm(std::string const& name = "data_analysis::Norm",  TaskCore::TaskState initial_state = Stopped);
+        ToRaw(std::string const& name = "data_analysis::ToRaw");
 
-        /** TaskContext constructor for Norm
+        /** TaskContext constructor for ToRaw
          * \param name Name of the task. This name needs to be unique to make it identifiable for nameservices.
          * \param engine The RTT Execution engine to be used for this task, which serialises the execution of all commands, programs, state machines and incoming events for a task.
          * 
          */
-        Norm(std::string const& name, RTT::ExecutionEngine* engine, TaskCore::TaskState initial_state = Stopped);
+        ToRaw(std::string const& name, RTT::ExecutionEngine* engine);
 
-        /** Default deconstructor of Norm
+        /** Default deconstructor of ToRaw
          */
-	~Norm();
+	~ToRaw();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the
