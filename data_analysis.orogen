@@ -94,6 +94,31 @@ task_context "MinMaxTask" do
     port_driven
 end
 
+task_context "DerivativeSGTask" do
+
+    subclasses "type_to_vector::BaseTask"
+
+    doc "Compute the first derivative of the input stream using a Savitzki Golay (SG) filter"
+
+    property("window_size", "int").
+        doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
+
+    property("poly_degree", "int").
+        doc "Degree of the polynomial used for for filtering. Has to be smaller than window_size."
+
+    output_port("derivative", "base/VectorXd").
+        doc "The (smooth) derivative of the input stream"
+
+    output_port("computation_time", "double").
+        doc "Computation time for filtering one input sample in seconds"
+
+    output_port("cycle_time", "double").
+        doc "Time between two subsequent incoming samples in seconds"
+
+    port_driven
+end
+
+
 task_context "WeightedSumTask" do
 
     subclasses "type_to_vector::BaseTask"
