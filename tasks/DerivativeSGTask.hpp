@@ -26,9 +26,13 @@ namespace data_analysis{
     {
 	friend class DerivativeSGTaskBase;
     protected:
-        std::vector<std::shared_ptr<SGDerivative> > filter_array;
-        base::VectorXd input_data, derivative;
-        base::Time stamp;
+        std::vector<std::shared_ptr<SGDerivative> > filter_array; /** Array of SG filters. One for each input dimension*/
+        base::VectorXd x;             /** Input sample*/
+        base::VectorXd x_minus_1;     /** Input sample at t-1*/
+        base::VectorXd x_minus_2;     /** Input sample at t-2*/
+        base::VectorXd derivative;    /** Numerical derivative*/
+        base::VectorXd derivative_sg; /** Derivative computed by SG filter*/
+        base::Time stamp;             /** Current timestamp*/
 
         virtual void process();
 

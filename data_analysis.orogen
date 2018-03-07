@@ -98,16 +98,25 @@ task_context "DerivativeSGTask" do
 
     subclasses "type_to_vector::BaseTask"
 
-    doc "Compute the first derivative of the input stream using a Savitzki Golay (SG) filter"
+    doc "Compute the first derivative of the input stream using a Savitzki Golay (SG) filter, as well as the normal derivative based
+         the mean of the (n-1)-th and (n+1)-th input sample. Note that the task computes internally the time difference between two
+         consecutive samples and uses this value for (a) Scaling the SG Derivative (b) numerical differentiation for the normal derivative (deltaT).
+         Thus, it is required that the cycle time is rather constant, that is that the input samples arrive in constant time intervals to have
+         a smoother derivative."
 
-    property("window_size", "int").
-        doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
+    property("window_size", "int", 5).
+        doc "The size of the filter window. Has to be positive and larger than poly_degree. A large value gives a smoother derivative, but increases
+             the phase shift between real and estimated derivate and also increases the computation effort"
 
-    property("poly_degree", "int").
-        doc "Degree of the polynomial used for for filtering. Has to be smaller than window_size."
+    property("poly_degree", "int", 2).
+        doc "Degree of the polynomial used for for filtering. Has to be smaller than window_size. A larger value gives a more accurate
+             (but not necessarily smoother) derivative and increases the computation effort"
 
     output_port("derivative", "base/VectorXd").
-        doc "The (smooth) derivative of the input stream"
+        doc "The normal derivative of the input stream using normal numerical differentiation (based on the mean of the (n-1)-th and (n+1)-th input sample)"
+
+    output_port("derivative_sg", "base/VectorXd").
+        doc "The (smooth) derivative of the input stream computed by the sg filter."
 
     output_port("computation_time", "double").
         doc "Computation time for filtering one input sample in seconds"

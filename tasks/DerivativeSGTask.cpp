@@ -57,23 +57,33 @@ void DerivativeSGTask::process(){
         double diff = (start-stamp).toSeconds();
         stamp = start;
 
-        getVector(0,input_data);
+        x_minus_2 = x_minus_1;
+        x_minus_1 = x;
+        getVector(0,x);
 
         if(filter_array.empty()){
-            for(int i = 0; i < input_data.size(); i++)
+            for(int i = 0; i < x.size(); i++)
                 filter_array.push_back(std::make_shared<SGDerivative>(_window_size.get(), _poly_degree.get()));
+            derivative_sg.resize(filter_array.size());
             derivative.resize(filter_array.size());
         }
 
-        if(input_data.size() != (int)filter_array.size())
-            throw std::runtime_error("Size of input data should be " + std::to_string(filter_array.size()) + "(size of poly_degree vector), but is " + std::to_string(input_data.size()));
+        if(x.size() != (int)filter_array.size())
+            throw std::runtime_error("Size of input data should be " + std::to_string(filter_array.size()) + "(size of poly_degree vector), but is " + std::to_string(x.size()));
 
         for(size_t i = 0; i < filter_array.size(); i++){
-            filter_array[i]->Process(input_data(i), derivative(i));
+            filter_array[i]->Process(x(i), derivative_sg(i));
             // We have to scale the derivative the cycle time here
-            derivative(i) /= diff;
+            derivative_sg(i) /= diff;
         }
-        _derivative.write(derivative);
+
+        if(!x_minus_2.size() == 0){
+            for(size_t i = 0; i < filter_array.size(); i++)
+                derivative(i) = (x(i) - x_minus_2(i))/(2*diff);
+            _derivative.write(derivative);
+        }
+
+        _derivative_sg.write(derivative_sg);
         _computation_time.write((base::Time::now() - start).toSeconds());
         _cycle_time.write(diff);
 

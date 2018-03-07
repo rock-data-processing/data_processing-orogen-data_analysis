@@ -4,7 +4,7 @@ aggregator_max_latency: 0.1
 # creates place information during conversion
 create_places: false
 # create a debug port for a vector and sends the conversion results to it
-debug_conversion: false
+debug_conversion: true
 # reference time to be used for not time stamped data
 start_time:
   microseconds: 0
