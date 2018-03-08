@@ -99,10 +99,7 @@ task_context "DerivativeSGTask" do
     subclasses "type_to_vector::BaseTask"
 
     doc "Compute the first derivative of the input stream using a Savitzki Golay (SG) filter, as well as the normal derivative based
-         the mean of the (n-1)-th and (n+1)-th input sample. Note that the task computes internally the time difference between two
-         consecutive samples and uses this value for (a) Scaling the SG Derivative (b) numerical differentiation for the normal derivative (deltaT).
-         Thus, it is required that the cycle time is rather constant, that is that the input samples arrive in constant time intervals to have
-         a smoother derivative."
+         the mean of the (n-1)-th and (n+1)-th input sample."
 
     property("window_size", "int", 11).
         doc "The size of the filter window. Has to be positive and larger than poly_degree. A large value gives a smoother derivative, but increases
