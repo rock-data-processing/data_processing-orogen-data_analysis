@@ -2,6 +2,7 @@
 
 #include "DerivativeSGTask.hpp"
 #include <data_analysis/sg_smooth.hpp>
+#include <math.h>
 
 using namespace data_analysis;
 
@@ -19,6 +20,10 @@ DerivativeSGTask::~DerivativeSGTask(){
 bool DerivativeSGTask::configureHook(){
     if (! DerivativeSGTaskBase::configureHook())
         return false;
+
+    expected_cycle_time = _expected_cycle_time.get();
+    window_size = _window_size.get();
+    poly_degree = _poly_degree.get();
 
     return true;
 }
@@ -54,7 +59,7 @@ void DerivativeSGTask::process(){
             return;
         }
         base::Time start = base::Time::now();
-        double diff = (start-stamp).toSeconds();
+        double cycle_time = (start-stamp).toSeconds();
         stamp = start;
 
         x_minus_2 = x_minus_1;
@@ -63,7 +68,7 @@ void DerivativeSGTask::process(){
 
         if(filter_array.empty()){
             for(int i = 0; i < x.size(); i++)
-                filter_array.push_back(std::make_shared<SGDerivative>(_window_size.get(), _poly_degree.get()));
+                filter_array.push_back(std::make_shared<SGDerivative>(window_size, poly_degree));
             derivative_sg.resize(filter_array.size());
             derivative.resize(filter_array.size());
         }
@@ -71,21 +76,25 @@ void DerivativeSGTask::process(){
         if(x.size() != (int)filter_array.size())
             throw std::runtime_error("Size of input data should be " + std::to_string(filter_array.size()) + "(size of poly_degree vector), but is " + std::to_string(x.size()));
 
+        double delta_t = cycle_time;
+        if(!std::isnan(expected_cycle_time))
+            delta_t = expected_cycle_time;
+
         for(size_t i = 0; i < filter_array.size(); i++){
             filter_array[i]->Process(x(i), derivative_sg(i));
             // We have to scale the derivative the cycle time here
-            derivative_sg(i) /= diff;
+            derivative_sg(i) /= delta_t;
         }
 
         if(!x_minus_2.size() == 0){
             for(size_t i = 0; i < filter_array.size(); i++)
-                derivative(i) = (x(i) - x_minus_2(i))/(2*diff);
+                derivative(i) = (x(i) - x_minus_2(i))/(2*delta_t);
             _derivative.write(derivative);
         }
 
         _derivative_sg.write(derivative_sg);
         _computation_time.write((base::Time::now() - start).toSeconds());
-        _cycle_time.write(diff);
+        _cycle_time.write(cycle_time);
 
     }
 }

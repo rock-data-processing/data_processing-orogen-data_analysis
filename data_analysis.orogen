@@ -112,6 +112,11 @@ task_context "DerivativeSGTask" do
         doc "Degree of the polynomial used for for filtering. Has to be smaller than window_size. A larger value gives a more accurate
              (but not necessarily smoother) derivative and increases the computation effort"
 
+     property("expected_cycle_time", "double").
+         doc "The expected time between two consecutive input samples (two consecutive calls of updateHook()). This value will be used for (a) Scaling the SG Derivative (b) numerical
+              differentiation for the normal derivative (deltaT). Thus, this value should be as accurate as possible. If the expected cycle time is unknown,
+              this value can can be set to .NaN, in which case it will be computed internally (which usually leads to more noisy derivatives)"
+
     output_port("derivative", "base/VectorXd").
         doc "The normal derivative of the input stream using normal numerical differentiation (based on the mean of the (n-1)-th and (n+1)-th input sample)"
 

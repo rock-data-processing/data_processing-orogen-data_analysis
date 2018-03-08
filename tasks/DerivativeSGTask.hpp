@@ -33,6 +33,9 @@ namespace data_analysis{
         base::VectorXd derivative;    /** Numerical derivative*/
         base::VectorXd derivative_sg; /** Derivative computed by SG filter*/
         base::Time stamp;             /** Current timestamp*/
+        double expected_cycle_time;   /** The expected time between two consecutive input samples*/
+        int window_size;              /** The size of the filter window*/
+        int poly_degree;              /** Degree of the polynomial used for for filtering*/
 
         virtual void process();
 
