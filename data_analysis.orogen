@@ -104,7 +104,7 @@ task_context "DerivativeSGTask" do
          Thus, it is required that the cycle time is rather constant, that is that the input samples arrive in constant time intervals to have
          a smoother derivative."
 
-    property("window_size", "int", 5).
+    property("window_size", "int", 11).
         doc "The size of the filter window. Has to be positive and larger than poly_degree. A large value gives a smoother derivative, but increases
              the phase shift between real and estimated derivate and also increases the computation effort"
 
