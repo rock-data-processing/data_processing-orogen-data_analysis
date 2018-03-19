@@ -4,31 +4,48 @@ Orocos.conf.load_dir("config")
 
 Orocos.run "data_analysis::MinMaxTask" => "min_max" do
     task = Orocos::TaskContext.get "min_max"
-    Orocos.conf.apply(task, ["default", "rbs"])
+    Orocos.conf.apply(task, ["default"])
     task.configure
     task.start
 
-    writer = task.rbs.writer
-    input_data = Types.base.samples.RigidBodyState.new
-    reader_min = task.min.reader
-    reader_max = task.max.reader
-    reader_min_coef = task.min_coef.reader
-    reader_max_coef = task.max_coef.reader
+    writer_rbs = task.rbs.writer
+    input_rbs  = Types.base.samples.RigidBodyState.new
+    reader_rbs_min = task.min_rbs.reader
+    reader_rbs_max = task.max_rbs.reader
+
+    writer_joints = task.joints.writer
+    input_joints = Types.base.samples.Joints.new
+    input_joints.elements = [Types.base.JointState.new]*2
+    reader_joints_min = task.min_joints.reader
+    reader_joints_max = task.max_joints.reader
 
     while true
-        input_data.position = Types.base.Vector3d.new(Random.rand,2*Random.rand,3*Random.rand)
-        writer.write input_data
+        input_rbs.position = Types.base.Vector3d.new(1 + 0.1*Random.rand - 0.05, 2 + 0.1*Random.rand - 0.05, 3 + 0.1*Random.rand - 0.05)
+        input_joints.elements[0].position = 4.0 + 0.1*Random.rand - 0.05
+        input_joints.elements[1].position = 5.0 + 0.1*Random.rand - 0.05
+
+        input_rbs.time = Types.base.Time.now
+        writer_rbs.write input_rbs
+        input_joints.time = Types.base.Time.now
+        writer_joints.write input_joints
+
         sleep 0.1
-        min = reader_min.read
-        max = reader_max.read
-        min_coef = reader_min_coef.read
-        max_coef = reader_max_coef.read
-        if max_coef
-            puts "Input data:    " + input_data.position.to_a.to_s
-            puts "Min:           " + min.to_s
-            puts "Max:           " + max.to_s
-            puts "Min Coef.:     " + min_coef.to_s
-            puts "Max Coef.:     " + max_coef.to_s
+        sample_rbs_min = reader_rbs_min.read
+        sample_rbs_max = reader_rbs_max.read
+        if sample_rbs_min && sample_rbs_max
+            puts "RBS port:"
+            puts "Input data:    " + input_rbs.position.to_a.to_s
+            puts "Min:           " + sample_rbs_min.to_s
+            puts "Max:           " + sample_rbs_max.to_s
+            puts
+        end
+        sample_joints_min = reader_joints_min.read
+        sample_joints_max = reader_joints_max.read
+        if sample_joints_min && sample_joints_max
+            puts "Joints port:"
+            puts "Input data:    [" + input_joints.elements[0].position.to_s + " " + input_joints.elements[1].position.to_s + "]"
+            puts "Min:           " + sample_joints_min.to_s
+            puts "Max:           " + sample_joints_max.to_s
             puts "................................."
         end
     end

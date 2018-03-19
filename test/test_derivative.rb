@@ -2,10 +2,10 @@ require 'orocos'
 Orocos.initialize
 Orocos.conf.load_dir("config")
 
-Orocos.run  'data_analysis::DerivativeSGTask' => 'derivative' do
+Orocos.run 'data_analysis::DerivativeSGTask' => 'derivative' do
 
   derivative = Orocos.name_service.get 'derivative'
-  Orocos.conf.apply(derivative, ['default', 'joints'])
+  Orocos.conf.apply(derivative, ['default'])
 
   derivative.configure
   derivative.start

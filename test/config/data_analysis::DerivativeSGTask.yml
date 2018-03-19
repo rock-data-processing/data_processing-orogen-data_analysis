@@ -20,8 +20,6 @@ poly_degree: 2
 # differentiation for the normal derivative (deltaT). Thus, this value should be as accurate as possible. If the actual cycle time is unknown
 # it can be set to .NaN, in which case it will be computed internally (which usually leads to more noisy derivatives)
 expected_cycle_time: .NaN
-
---- name:joints
 # Add multiple in and output ports (Optional). Same as calling addPort() multiple times.
 port_config:
     - portname: joints
