@@ -6,7 +6,36 @@
 #include "data_analysis/RMSTaskBase.hpp"
 #include <data_analysis/rms.hpp>
 
-namespace data_analysis{
+namespace data_analysis{    
+
+    class RMSCmpInterface{
+    protected:
+        std::shared_ptr<RMS> rms_cmp;
+        std::shared_ptr< RTT::OutputPort<double> > rms_port;
+        std::shared_ptr< RTT::OutputPort<double> > norm_port;
+        RTT::TaskContext *task_context;
+
+    public:
+        RMSCmpInterface(const std::string name, const int window_size, RTT::TaskContext* _task_context){
+            rms_cmp = std::make_shared<RMS>(window_size);
+
+            rms_port  = std::make_shared< RTT::OutputPort<double> >("rms_" + name);
+            norm_port = std::make_shared< RTT::OutputPort<double> >("norm_" + name);
+
+            task_context = _task_context;
+            task_context->ports()->addPort(rms_port->getName(), *rms_port);
+            task_context->ports()->addPort(norm_port->getName(), *norm_port);
+        }
+        ~RMSCmpInterface(){
+            task_context->ports()->removePort(rms_port->getName());
+            task_context->ports()->removePort(norm_port->getName());
+        }
+
+        void update(const base::VectorXd &input_data){
+            norm_port->write(input_data.norm());
+            rms_port->write(rms_cmp->update(input_data));
+        }
+    };
 
     /*! \class RMSTask
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -27,8 +56,8 @@ namespace data_analysis{
 	friend class RMSTaskBase;
     protected:
 
-        std::shared_ptr<RMS> rms_cmp;
         base::VectorXd input_data;
+        std::vector< std::shared_ptr<RMSCmpInterface> > cmp_interfaces;
 
         virtual void process();
 

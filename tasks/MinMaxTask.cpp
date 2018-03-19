@@ -30,7 +30,8 @@ bool MinMaxTask::configureHook(){
         window_size = std::numeric_limits<int>::max();
     else
         window_size = (int)_window_size.get();
-    min_max = std::make_shared<MinMax>(window_size);
+    for(auto c : _port_config.get())
+        cmp_interfaces.push_back(std::make_shared<MinMaxCmpInterface>(c.portname, window_size, this));
 
     return true;
 }
@@ -55,17 +56,14 @@ void MinMaxTask::stopHook(){
 
 void MinMaxTask::cleanupHook(){
     MinMaxTaskBase::cleanupHook();
+    cmp_interfaces.clear();
 }
 
 void MinMaxTask::process(){
-    if(isFilled(0)){
-        getVector(0,input_data);
-        _min_coef.write(input_data.minCoeff());
-        _max_coef.write(input_data.maxCoeff());
-
-        double min,max;
-        min_max->update(input_data, min, max);
-        _min.write(min);
-        _max.write(max);
+    for(size_t i = 0; i < _port_config.get().size(); i++){
+        if(isFilled(i)){
+            getVector(i, input_data);
+            cmp_interfaces[i]->update(input_data);
+        }
     }
 }

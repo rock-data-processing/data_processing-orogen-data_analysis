@@ -17,7 +17,7 @@ task_context "NormTask" do
               p = 2 -> euclidean norm
               p = inf -> inf-norm/max.-norm"
 
-    output_port("norm", "double").
+    dynamic_output_port(/^norm_\d+$/, "/double").
         doc "The norm of the input data stream."
 
     port_driven
@@ -34,14 +34,11 @@ task_context "RMSTask" do
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
 
-    output_port("norm", "double").
-        doc "The 2-norm of the current input sample."
+    dynamic_output_port(/^norm_\d+$/, "/double").
+        doc "The norm of the input data stream."
 
-    output_port("rms", "double")
-        doc "The rms value of the input data stream."
-
-    output_port("n_data", "int").
-        doc "Number of arrived data samples"
+    dynamic_output_port(/^rms_\d+$/, "/double").
+        doc "The norm of the input data stream."
 
     port_driven
 end
@@ -55,17 +52,14 @@ task_context "MeanTask" do
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
 
-    output_port("mean_element", "double").
+    dynamic_output_port(/^mean_element_\d+$/, "/double").
         doc "The mean of the last input sample."
 
-    output_port("mean", "base/VectorXd").
+    dynamic_output_port(/^mean_\d+$/, "/base/VectorXd").
         doc "The mean of the input data stream within the filter window."
 
-    output_port("std_dev", "base/VectorXd").
-        doc "The standard deviation of the input data stream  within the filter window."
-
-    output_port("n_data", "int").
-        doc "Number of arrived data samples"
+    dynamic_output_port(/^std_dev_\d+$/, "/base/VectorXd").
+        doc "The mean of the input data stream within the filter window."
 
     port_driven
 end
@@ -79,16 +73,16 @@ task_context "MinMaxTask" do
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
 
-    output_port("min", "double")
+    dynamic_output_port(/^min_\d+$/, "/double").
         doc "The min. value of all elements and all data vectors in the filter window"
 
-    output_port("max", "double")
+    dynamic_output_port(/^max_\d+$/, "/double").
         doc "The max. value of all elements and all data vectors in the filter window"
 
-    output_port("min_coef", "double")
+    dynamic_output_port(/^min_coef_\d+$/, "/double").
         doc "The min. value of the current sample"
 
-    output_port("max_coef", "double")
+    dynamic_output_port(/^max_coef_\d+$/, "/double").
         doc "The max. coefficient of the current sample"
 
     port_driven

@@ -20,17 +20,13 @@ bool MeanTask::configureHook(){
     if (! MeanTaskBase::configureHook())
         return false;
 
-    if(_port_config.get().size() != 1){
-        LOG_ERROR("Size of port_config property has to be 1 for this task!");
-        return false;
-    }
-
     int window_size;
     if(std::isinf((double)_window_size.get()))
         window_size = std::numeric_limits<int>::max();
     else
         window_size = (int)_window_size.get();
-    mean_cmp = std::make_shared<Mean>(window_size);
+    for(auto c : _port_config.get())
+        cmp_interfaces.push_back(std::make_shared<MeanCmpInterface>(c.portname, window_size, this));
 
     return true;
 }
@@ -55,17 +51,15 @@ void MeanTask::stopHook(){
 
 void MeanTask::cleanupHook(){
     MeanTaskBase::cleanupHook();
-    mean_cmp.reset();
+    cmp_interfaces.clear();
 }
 
 void MeanTask::process(){
-    if(isFilled(0)){
-        getVector(0,input_data);
-        mean_cmp->update(input_data, mean, std_dev);
-        _mean.write(mean);
-        _std_dev.write(std_dev);
-        _mean_element.write(input_data.mean());
-        _n_data.write(mean_cmp->nData());
+    for(size_t i = 0; i < _port_config.get().size(); i++){
+        if(isFilled(i)){
+            getVector(i, input_data);
+            cmp_interfaces[i]->update(input_data);
+        }
     }
 }
 

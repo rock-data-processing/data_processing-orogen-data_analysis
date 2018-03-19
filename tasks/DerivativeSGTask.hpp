@@ -5,9 +5,10 @@
 
 #include "data_analysis/DerivativeSGTaskBase.hpp"
 
-class SGDerivative;
-
 namespace data_analysis{
+
+    class SGDerivative;
+
     /*! \class DerivativeSGTask
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.

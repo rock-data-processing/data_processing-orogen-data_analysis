@@ -30,7 +30,8 @@ bool RMSTask::configureHook(){
         window_size = std::numeric_limits<int>::max();
     else
         window_size = (int)_window_size.get();
-    rms_cmp = std::make_shared<RMS>(window_size);
+    for(auto c : _port_config.get())
+        cmp_interfaces.push_back(std::make_shared<RMSCmpInterface>(c.portname, window_size, this));
 
     return true;
 }
@@ -55,16 +56,15 @@ void RMSTask::stopHook(){
 
 void RMSTask::cleanupHook(){
     RMSTaskBase::cleanupHook();
-    rms_cmp.reset();
+    cmp_interfaces.clear();
 }
 
 void RMSTask::process(){
-    if(isFilled(0)){
-        getVector(0,input_data);
-        double rms = rms_cmp->update(input_data);
-        _rms.write(rms);
-        _norm.write(input_data.norm());
-        _n_data.write(rms_cmp->nData());
+    for(size_t i = 0; i < _port_config.get().size(); i++){
+        if(isFilled(i)){
+            getVector(i, input_data);
+            cmp_interfaces[i]->update(input_data);
+        }
     }
 }
 

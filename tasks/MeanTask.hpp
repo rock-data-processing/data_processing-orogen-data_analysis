@@ -8,6 +8,42 @@
 
 namespace data_analysis{
 
+    class MeanCmpInterface{
+    protected:
+        std::shared_ptr<Mean> mean_cmp;
+        std::shared_ptr< RTT::OutputPort<base::VectorXd> > mean_port;
+        std::shared_ptr< RTT::OutputPort<base::VectorXd> > std_dev_port;
+        std::shared_ptr< RTT::OutputPort<double> > mean_element_port;
+        base::VectorXd mean, std_dev;
+        RTT::TaskContext *task_context;
+
+    public:
+        MeanCmpInterface(const std::string name, const int window_size, RTT::TaskContext* _task_context){
+            mean_cmp          = std::make_shared<Mean>(window_size);
+
+            mean_port         = std::make_shared< RTT::OutputPort<base::VectorXd> >("mean_" + name);
+            std_dev_port      = std::make_shared< RTT::OutputPort<base::VectorXd> >("std_dev_" + name);
+            mean_element_port = std::make_shared< RTT::OutputPort<double> >("mean_element_" + name);
+
+            task_context = _task_context;
+            task_context->ports()->addPort(mean_port->getName(), *mean_port);
+            task_context->ports()->addPort(std_dev_port->getName(), *std_dev_port);
+            task_context->ports()->addPort(mean_element_port->getName(), *mean_element_port);
+        }
+        ~MeanCmpInterface(){
+            task_context->ports()->removePort(mean_port->getName());
+            task_context->ports()->removePort(std_dev_port->getName());
+            task_context->ports()->removePort(mean_element_port->getName());
+        }
+
+        void update(const base::VectorXd &input_data){
+            mean_cmp->update(input_data, mean, std_dev);
+            mean_port->write(mean);
+            std_dev_port->write(std_dev);
+            mean_element_port->write(input_data.mean());
+        }
+    };
+
     /*! \class MeanTask
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
@@ -26,9 +62,8 @@ namespace data_analysis{
     {
 	friend class MeanTaskBase;
     protected:
-
-        std::shared_ptr<Mean> mean_cmp;
-        base::VectorXd input_data, mean, std_dev;
+        base::VectorXd input_data;
+        std::vector< std::shared_ptr<MeanCmpInterface> > cmp_interfaces;
 
         virtual void process();
 

@@ -8,6 +8,47 @@
 
 namespace data_analysis{
 
+    class MinMaxCmpInterface{
+    protected:
+        std::shared_ptr<MinMax> min_max_cmp;
+        std::shared_ptr< RTT::OutputPort<double> > min_port;
+        std::shared_ptr< RTT::OutputPort<double> > max_port;
+        std::shared_ptr< RTT::OutputPort<double> > min_coef_port;
+        std::shared_ptr< RTT::OutputPort<double> > max_coef_port;
+        RTT::TaskContext *task_context;
+
+    public:
+        MinMaxCmpInterface(const std::string name, const int window_size, RTT::TaskContext* _task_context){
+            min_max_cmp = std::make_shared<MinMax>(window_size);
+
+            min_port      = std::make_shared< RTT::OutputPort<double> >("min_" + name);
+            max_port      = std::make_shared< RTT::OutputPort<double> >("max_" + name);
+            min_coef_port = std::make_shared< RTT::OutputPort<double> >("min_coef_" + name);
+            max_coef_port = std::make_shared< RTT::OutputPort<double> >("max_coef_" + name);
+
+            task_context = _task_context;
+            task_context->ports()->addPort(min_port->getName(), *min_port);
+            task_context->ports()->addPort(max_port->getName(), *max_port);
+            task_context->ports()->addPort(min_coef_port->getName(), *min_coef_port);
+            task_context->ports()->addPort(max_coef_port->getName(), *max_coef_port);
+        }
+        ~MinMaxCmpInterface(){
+            task_context->ports()->removePort(min_port->getName());
+            task_context->ports()->removePort(max_port->getName());
+            task_context->ports()->removePort(min_coef_port->getName());
+            task_context->ports()->removePort(max_coef_port->getName());
+        }
+
+        void update(const base::VectorXd &input_data){
+            double min, max;
+            min_max_cmp->update(input_data, min, max);
+            min_port->write(min);
+            max_port->write(max);
+            min_coef_port->write(input_data.minCoeff());
+            max_coef_port->write(input_data.maxCoeff());
+        }
+    };
+
     /*! \class MinMaxTask
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
@@ -28,7 +69,7 @@ namespace data_analysis{
     protected:
 
         base::VectorXd input_data;
-        std::shared_ptr<MinMax> min_max;
+        std::vector< std::shared_ptr<MinMaxCmpInterface> > cmp_interfaces;
 
         virtual void process();
 

@@ -25,7 +25,8 @@ bool NormTask::configureHook(){
         return false;
     }
 
-    p = _p.get();
+    for(auto c : _port_config.get())
+        cmp_interfaces.push_back(std::make_shared<NormCmpInterface>(c.portname, _p.get(), this));
 
     return true;
 }
@@ -50,22 +51,15 @@ void NormTask::stopHook(){
 
 void NormTask::cleanupHook(){
     NormTaskBase::cleanupHook();
+    cmp_interfaces.clear();
 }
 
 void NormTask::process(){
-    if(isFilled(0)){
-        getVector(0,input_data);
-        double norm;
-        if(p == 1) // Sum norm
-            norm = input_data.lpNorm<1>();
-        else if(p == 2)
-            norm = input_data.lpNorm<2>();
-        else if(p == std::numeric_limits<int>::max())
-            norm = input_data.lpNorm<Eigen::Infinity>();
-        else
-            throw std::runtime_error("Invalid norm exponent p: Should be within [1,2,Inf], but is " + std::to_string(p));
-
-        _norm.write(norm);
+    for(size_t i = 0; i < _port_config.get().size(); i++){
+        if(isFilled(i)){
+            getVector(i, input_data);
+            cmp_interfaces[i]->update(input_data);
+        }
     }
 }
 

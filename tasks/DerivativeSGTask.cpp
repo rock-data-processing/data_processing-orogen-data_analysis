@@ -1,7 +1,7 @@
 /* Generated from orogen/lib/orogen/templates/tasks/Task.cpp */
 
 #include "DerivativeSGTask.hpp"
-#include <data_analysis/sg_smooth.hpp>
+#include <data_analysis/sg_derivative.hpp>
 #include <math.h>
 
 using namespace data_analysis;

@@ -7,6 +7,40 @@
 
 namespace data_analysis{
 
+
+    class NormCmpInterface{
+    protected:
+        std::shared_ptr< RTT::OutputPort<double> > norm_port;
+        RTT::TaskContext *task_context;
+        int p;
+
+    public:
+        NormCmpInterface(const std::string name, const int _p, RTT::TaskContext* _task_context){
+            norm_port = std::make_shared< RTT::OutputPort<double> >("norm_" + name);
+            p = _p;
+            task_context = _task_context;
+            task_context->ports()->addPort(norm_port->getName(), *norm_port);
+        }
+        ~NormCmpInterface(){
+            task_context->ports()->removePort(norm_port->getName());
+        }
+
+        void update(const base::VectorXd &input_data){
+            double norm;
+            if(p == 1) // Sum norm
+                norm = input_data.lpNorm<1>();
+            else if(p == 2)
+                norm = input_data.lpNorm<2>();
+            else if(p == std::numeric_limits<int>::max())
+                norm = input_data.lpNorm<Eigen::Infinity>();
+            else
+                throw std::runtime_error("Invalid norm exponent p: Should be within [1,2,Inf], but is " + std::to_string(p));
+
+            norm_port->write(norm);
+
+        }
+    };
+
     /*! \class NormTask
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
@@ -27,7 +61,7 @@ namespace data_analysis{
     protected:
 
         base::VectorXd input_data;
-        double p;
+        std::vector< std::shared_ptr<NormCmpInterface> > cmp_interfaces;
 
         virtual void process();
 
