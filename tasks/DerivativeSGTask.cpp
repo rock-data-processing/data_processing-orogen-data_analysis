@@ -21,6 +21,11 @@ bool DerivativeSGTask::configureHook(){
     if (! DerivativeSGTaskBase::configureHook())
         return false;
 
+    if(_port_config.get().size() != 1){
+        LOG_ERROR("Size of port_config property has to be 1 for this task!");
+        return false;
+    }
+
     expected_cycle_time = _expected_cycle_time.get();
     window_size = _window_size.get();
     poly_degree = _poly_degree.get();
@@ -52,7 +57,8 @@ void DerivativeSGTask::cleanupHook(){
 }
 
 void DerivativeSGTask::process(){
-    if(isFilled(0)){
+    if(isUpdated(0)){
+        resetIsUpdated(0);
 
         if(stamp.isNull()){
             stamp = base::Time::now();

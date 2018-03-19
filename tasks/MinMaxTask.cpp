@@ -20,11 +20,6 @@ bool MinMaxTask::configureHook(){
     if (! MinMaxTaskBase::configureHook())
         return false;
 
-    if(_port_config.get().size() != 1){
-        LOG_ERROR("Size of port_config property has to be 1 for this task!");
-        return false;
-    }
-
     int window_size;
     if(std::isinf((double)_window_size.get()))
         window_size = std::numeric_limits<int>::max();
@@ -61,7 +56,8 @@ void MinMaxTask::cleanupHook(){
 
 void MinMaxTask::process(){
     for(size_t i = 0; i < _port_config.get().size(); i++){
-        if(isFilled(i)){
+        if(isUpdated(i)){
+            resetIsUpdated(i);
             getVector(i, input_data);
             cmp_interfaces[i]->update(input_data);
         }

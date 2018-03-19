@@ -56,7 +56,8 @@ void MeanTask::cleanupHook(){
 
 void MeanTask::process(){
     for(size_t i = 0; i < _port_config.get().size(); i++){
-        if(isFilled(i)){
+        if(isUpdated(i)){
+            resetIsUpdated(i);
             getVector(i, input_data);
             cmp_interfaces[i]->update(input_data);
         }
