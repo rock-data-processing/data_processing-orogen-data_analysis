@@ -20,7 +20,6 @@ bool RMSTask::configureHook(){
     if (! RMSTaskBase::configureHook())
         return false;
 
-    int window_size;
     if(std::isinf((double)_window_size.get()))
         window_size = std::numeric_limits<int>::max();
     else
@@ -64,3 +63,7 @@ void RMSTask::process(){
     }
 }
 
+void RMSTask::reset(){
+    for(auto &c : cmp_interfaces)
+        c->reset(window_size);
+}

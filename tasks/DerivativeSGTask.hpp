@@ -38,7 +38,10 @@ namespace data_analysis{
         int window_size;              /** The size of the filter window*/
         int poly_degree;              /** Degree of the polynomial used for for filtering*/
 
+        /** Process new data samples*/
         virtual void process();
+        /** Empty the data queue*/
+        virtual void reset();
 
     public:
         /** TaskContext constructor for DerivativeSGTask

@@ -40,6 +40,9 @@ task_context "RMSTask" do
     dynamic_output_port(/^rms_\d+$/, "/double").
         doc "The norm of the input data stream."
 
+    operation("reset").
+        doc "Empty the data queue"
+
     port_driven
 end
 
@@ -60,6 +63,9 @@ task_context "MeanTask" do
 
     dynamic_output_port(/^std_dev_\d+$/, "/base/VectorXd").
         doc "The mean of the input data stream within the filter window."
+
+    operation("reset").
+        doc "Empty the data queue"
 
     port_driven
 end
@@ -84,6 +90,9 @@ task_context "MinMaxTask" do
 
     dynamic_output_port(/^max_coef_\d+$/, "/double").
         doc "The max. coefficient of the current sample"
+
+    operation("reset").
+        doc "Empty the data queue"
 
     port_driven
 end
@@ -119,6 +128,9 @@ task_context "DerivativeSGTask" do
 
     output_port("cycle_time", "double").
         doc "Time between two subsequent incoming samples in seconds"
+
+    operation("reset").
+        doc "Empty the data queue"
 
     port_driven
 end

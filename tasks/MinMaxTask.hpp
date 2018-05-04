@@ -47,6 +47,11 @@ namespace data_analysis{
             min_coef_port->write(input_data.minCoeff());
             max_coef_port->write(input_data.maxCoeff());
         }
+
+        void reset(const int window_size){
+            min_max_cmp.reset();
+            min_max_cmp = std::make_shared<MinMax>(window_size);
+        }
     };
 
     /*! \class MinMaxTask
@@ -70,8 +75,12 @@ namespace data_analysis{
 
         base::VectorXd input_data;
         std::vector< std::shared_ptr<MinMaxCmpInterface> > cmp_interfaces;
+        int window_size;
 
+        /** Process new data samples*/
         virtual void process();
+        /** Empty the data queue*/
+        virtual void reset();
 
     public:
         /** TaskContext constructor for MinMaxTask

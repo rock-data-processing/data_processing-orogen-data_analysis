@@ -35,6 +35,12 @@ namespace data_analysis{
             norm_port->write(input_data.norm());
             rms_port->write(rms_cmp->update(input_data));
         }
+
+        void reset(const int window_size){
+            rms_cmp.reset();
+            rms_cmp = std::make_shared<RMS>(window_size);
+        }
+
     };
 
     /*! \class RMSTask
@@ -58,8 +64,12 @@ namespace data_analysis{
 
         base::VectorXd input_data;
         std::vector< std::shared_ptr<RMSCmpInterface> > cmp_interfaces;
+        int window_size;
 
+        /** Process new data samples*/
         virtual void process();
+        /** Empty the data queue*/
+        virtual void reset();
 
     public:
         /** TaskContext constructor for RMSTask

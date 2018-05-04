@@ -42,6 +42,11 @@ namespace data_analysis{
             std_dev_port->write(std_dev);
             mean_element_port->write(input_data.mean());
         }
+
+        void reset(const int window_size){
+            mean_cmp.reset();
+            mean_cmp = std::make_shared<Mean>(window_size);
+        }
     };
 
     /*! \class MeanTask
@@ -64,8 +69,12 @@ namespace data_analysis{
     protected:
         base::VectorXd input_data;
         std::vector< std::shared_ptr<MeanCmpInterface> > cmp_interfaces;
+        int window_size;
 
+        /** Process new data samples*/
         virtual void process();
+        /** Empty the data queue*/
+        virtual void reset();
 
     public:
         /** TaskContext constructor for MeanTask

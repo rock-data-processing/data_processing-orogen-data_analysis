@@ -20,7 +20,6 @@ bool MinMaxTask::configureHook(){
     if (! MinMaxTaskBase::configureHook())
         return false;
 
-    int window_size;
     if(std::isinf((double)_window_size.get()))
         window_size = std::numeric_limits<int>::max();
     else

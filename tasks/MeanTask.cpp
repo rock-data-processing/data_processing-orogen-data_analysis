@@ -20,7 +20,6 @@ bool MeanTask::configureHook(){
     if (! MeanTaskBase::configureHook())
         return false;
 
-    int window_size;
     if(std::isinf((double)_window_size.get()))
         window_size = std::numeric_limits<int>::max();
     else
@@ -62,5 +61,9 @@ void MeanTask::process(){
             cmp_interfaces[i]->update(input_data);
         }
     }
+void MeanTask::reset(){
+    for(auto &c : cmp_interfaces)
+        c->reset(window_size);
 }
+
 

@@ -104,3 +104,13 @@ void DerivativeSGTask::process(){
 
     }
 }
+
+void DerivativeSGTask::reset(){
+    filter_array.clear();
+    x_minus_2.resize(0);
+    x_minus_1.resize(0);
+    derivative_sg.resize(0);
+    derivative.resize(0);
+    x.resize(0);
+
+}
