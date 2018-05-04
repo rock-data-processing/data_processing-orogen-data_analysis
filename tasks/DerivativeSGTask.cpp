@@ -92,7 +92,7 @@ void DerivativeSGTask::process(){
             derivative_sg(i) /= delta_t;
         }
 
-        if(!x_minus_2.size() == 0){
+        if(x_minus_2.size() != 0){
             for(size_t i = 0; i < filter_array.size(); i++)
                 derivative(i) = (x(i) - x_minus_2(i))/(2*delta_t);
             _derivative.write(derivative);
