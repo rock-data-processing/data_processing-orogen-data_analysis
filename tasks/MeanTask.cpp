@@ -38,6 +38,13 @@ bool MeanTask::startHook(){
 
 void MeanTask::updateHook(){
     MeanTaskBase::updateHook();
+    for(size_t i = 0; i < _port_config.get().size(); i++){
+        if(isUpdated(i)){
+            resetIsUpdated(i);
+            getVector(i, input_data);
+            cmp_interfaces[i]->update(input_data);
+        }
+    }
 }
 
 void MeanTask::errorHook(){
@@ -54,13 +61,10 @@ void MeanTask::cleanupHook(){
 }
 
 void MeanTask::process(){
-    for(size_t i = 0; i < _port_config.get().size(); i++){
-        if(isUpdated(i)){
-            resetIsUpdated(i);
-            getVector(i, input_data);
-            cmp_interfaces[i]->update(input_data);
-        }
-    }
+    /* process() is only triggered if ALL input ports have data. Here, we want to trigger the computation, whenever ANY
+     input port has data. Thus, this computation is done in the updateHook() */
+}
+
 void MeanTask::reset(){
     for(auto &c : cmp_interfaces)
         c->reset(window_size);
