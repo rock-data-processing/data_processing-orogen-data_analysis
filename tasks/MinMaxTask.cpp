@@ -38,18 +38,11 @@ bool MinMaxTask::startHook(){
 
 void MinMaxTask::updateHook(){
     MinMaxTaskBase::updateHook();
-    LOG_ERROR("In Upudate Hook");
     for(size_t i = 0; i < _port_config.get().size(); i++){
         if(isUpdated(i)){
-            LOG_ERROR("In Updated");
             resetIsUpdated(i);
-            LOG_ERROR("Getting vector");
             getVector(i, input_data);
-            LOG_ERROR("INPUT DATA SIZE: %i", input_data.size());
-            std::cout<<input_data<<std::endl;
-            LOG_ERROR("Updating com interface");
             cmp_interfaces[i]->update(input_data);
-            LOG_ERROR("..done");
         }
     }
 }
