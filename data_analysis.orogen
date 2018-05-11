@@ -5,6 +5,18 @@ import_types_from "data_analysis/sigmoid.hpp"
 using_library "data_analysis"
 using_task_library "type_to_vector"
 
+task_context "AbsTask" do
+
+    subclasses "type_to_vector::BaseTask"
+
+    doc "Compute the absolute value of the input data stream"
+
+    dynamic_output_port(/^abs_\d+$/, "/base/VectorXd").
+        doc "The output data stream, where each entry is taken as the absolute value of the input data stream."
+
+    port_driven
+end
+
 task_context "NormTask" do
 
     subclasses "type_to_vector::BaseTask"
@@ -38,7 +50,7 @@ task_context "RMSTask" do
         doc "The norm of the input data stream."
 
     dynamic_output_port(/^rms_\d+$/, "/double").
-        doc "The norm of the input data stream."
+        doc "The RMS of the input data stream."
 
     operation("reset").
         doc "Empty the data queue"
