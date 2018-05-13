@@ -7,3 +7,5 @@ INCLUDE(data_analysisBase)
 # FIND_PACKAGE(KDL)
 # FIND_PACKAGE(OCL)
 
+install(PROGRAMS bin/sigmoid
+    DESTINATION bin)

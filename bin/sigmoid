@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require "orocos"
+require 'optparse'
+
+lower_asymptote = 0.0
+upper_asymptote = 1.0
+initial_value   = 1.0
+growth_rate     = 1.0
+hor_shift       = 0.0
+initial_value   = 1.0
+filename        = "sigmoid.txt"
+step_size       = 0.001
+from            = -1.0
+to              = 1.0
+plot            = false
+
+options = OptionParser.new do |opt|
+    opt.banner = <<-EOD
+    sigmoid <options>
+    EOD
+    opt.on '--lower_asymptote=VALUE', '-l=VALUE', 'The lower Asymptote of the Sigmoid function. Default is 0.0' do |val|
+        lower_asymptote = Float(val)
+    end
+    opt.on '--upper_asymptote=VALUE', '-u=VALUE', 'The upper Asymptote of the Sigmoid function. Default is 1.0' do |val|
+        upper_asymptote = Float(val)
+    end
+    opt.on '--growth_rate=VALUE', '-g=VALUE', 'The growth rate of the Sigmoid function. Default is 1.0' do |val|
+        growth_rate = Float(val)
+    end
+    opt.on '--hor_shift=VALUE', '-h=VALUE', 'The horizontal shift of the Sigmoid function. Default is 0.0' do |val|
+        hor_shift = Float(val)
+    end
+    opt.on '--initial_value=VALUE', '-i=VALUE', 'The initial value of the Sigmoid function. Default is 1.0' do |val|
+        initial_value = Float(val)
+    end
+    opt.on '--file=VALUE', 'The filename to write data to. Default is sigmoid.txt' do |val|
+        filename = val
+    end
+    opt.on '--from=VALUE', 'Record the sigmoid from this value. Default is -1.0' do |val|
+        from = Float(val)
+    end
+    opt.on '--to=VALUE', 'Record the sigmoid to this value. Default is 1.0' do |val|
+        to = Float(val)
+    end
+    opt.on '--step_size=VALUE', '-s=VALUE', 'The step size for sampling the Sigmoid. Default is 0.001' do |val|
+        step_size = Float(val)
+    end
+    opt.on '--plot', 'Plot the data using gnuplot. Default is false' do |val|
+        plot = true
+    end
+    opt.on '--help', 'this help message' do
+        puts opt
+        exit(0)
+    end
+end
+args = options.parse(ARGV)
+
+Orocos.initialize
+Orocos.load_typekit("data_analysis")
+
+Orocos.run "data_analysis::SigmoidTask" => "sigmoid" do
+    task = Orocos::TaskContext.get "sigmoid"
+    params = Types.data_analysis.SigmoidParams.new
+    params.lower_asymptote = lower_asymptote
+    params.upper_asymptote = upper_asymptote
+    params.growth_rate     = growth_rate
+    params.hor_shift       = hor_shift
+    params.initial_value   = initial_value
+    task.sigmoid_params = params
+    task.configure
+    task.writeToFile filename, from, to, step_size
+
+    if plot
+        File.open("gnuplot_file", 'w') { |file|
+            file.write("set grid\n")
+            file.write("plot '" + filename + "' using 1:2 with lines linewidth 2")
+        }
+        system("gnuplot -persist gnuplot_file")
+    end
+end
