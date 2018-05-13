@@ -37,6 +37,7 @@ namespace data_analysis{
         double expected_cycle_time;   /** The expected time between two consecutive input samples*/
         int window_size;              /** The size of the filter window*/
         int poly_degree;              /** Degree of the polynomial used for for filtering*/
+        uint n_samples;
 
         /** Process new data samples*/
         virtual void process();

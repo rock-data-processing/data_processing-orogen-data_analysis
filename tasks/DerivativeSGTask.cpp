@@ -30,6 +30,8 @@ bool DerivativeSGTask::configureHook(){
     window_size = _window_size.get();
     poly_degree = _poly_degree.get();
 
+    n_samples = 0;
+
     return true;
 }
 
@@ -58,6 +60,7 @@ void DerivativeSGTask::cleanupHook(){
 
 void DerivativeSGTask::process(){
     if(isUpdated(0)){
+        n_samples++;
         resetIsUpdated(0);
 
         if(stamp.isNull()){
@@ -98,9 +101,11 @@ void DerivativeSGTask::process(){
             _derivative.write(derivative);
         }
 
-        _derivative_sg.write(derivative_sg);
-        _computation_time.write((base::Time::now() - start).toSeconds());
-        _cycle_time.write(cycle_time);
+        if(n_samples > 2*window_size + 2){
+            _derivative_sg.write(derivative_sg);
+            _computation_time.write((base::Time::now() - start).toSeconds());
+            _cycle_time.write(cycle_time);
+        }
 
     }
 }
@@ -112,5 +117,5 @@ void DerivativeSGTask::reset(){
     derivative_sg.resize(0);
     derivative.resize(0);
     x.resize(0);
-
+    n_samples = 0;
 }
