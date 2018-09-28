@@ -5,9 +5,7 @@ import_types_from "data_analysis/sigmoid.hpp"
 using_library "data_analysis"
 using_task_library "type_to_vector"
 
-task_context "AbsTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "AbsTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Compute the absolute value of the input data stream"
 
@@ -17,9 +15,7 @@ task_context "AbsTask" do
     port_driven
 end
 
-task_context "NormTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "NormTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Compute the lp norm of the input data stream"
 
@@ -35,9 +31,7 @@ task_context "NormTask" do
     port_driven
 end
 
-task_context "RMSTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "RMSTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Compute the RMS of the input data stream:
 
@@ -58,9 +52,7 @@ task_context "RMSTask" do
     port_driven
 end
 
-task_context "MeanTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "MeanTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Compute mean and std. dev. of the input data stream"
 
@@ -82,9 +74,7 @@ task_context "MeanTask" do
     port_driven
 end
 
-task_context "MinMaxTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "MinMaxTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Output the min value of the each element of the input data stream"
 
@@ -109,9 +99,7 @@ task_context "MinMaxTask" do
     port_driven
 end
 
-task_context "DerivativeSGTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "DerivativeSGTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Compute the first derivative of the input stream using a Savitzki Golay (SG) filter, as well as the normal derivative based
          the mean of the (n-1)-th and (n+1)-th input sample."
@@ -148,9 +136,7 @@ task_context "DerivativeSGTask" do
 end
 
 
-task_context "WeightedSumTask" do
-
-    subclasses "type_to_vector::BaseTask"
+task_context "WeightedSumTask", subclasses: "type_to_vector::BaseTask" do
 
     doc "Compute the weighted sum of n input streams"
 
