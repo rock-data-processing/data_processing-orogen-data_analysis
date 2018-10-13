@@ -40,6 +40,11 @@ task_context "RMSTask", subclasses: "type_to_vector::BaseTask" do
     property("window_size", "double").
         doc "The size of the filter window. Can be .Inf, in which case all input data ever arrived will be considered"
 
+    property("accumulate", "bool", false).
+        doc "Do not divide the Squared error by the number of samples (accumulated error)"
+
+    output_port("n_data", "base/VectorXd")
+
     dynamic_output_port(/^norm_\d+$/, "/double").
         doc "The norm of the input data stream."
 

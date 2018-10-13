@@ -14,10 +14,14 @@ namespace data_analysis{
         std::shared_ptr< RTT::OutputPort<double> > rms_port;
         std::shared_ptr< RTT::OutputPort<double> > norm_port;
         RTT::TaskContext *task_context;
+        bool accumulate;
 
     public:
-        RMSCmpInterface(const std::string name, const int window_size, RTT::TaskContext* _task_context){
-            rms_cmp = std::make_shared<RMS>(window_size);
+        RMSCmpInterface(const std::string name, const int window_size, RTT::TaskContext* _task_context, bool acc = false){
+            accumulate = acc;
+            LOG_ERROR("Creating shared pointer")
+            rms_cmp = std::make_shared<RMS>(window_size, accumulate);
+            LOG_ERROR("...done")
 
             rms_port  = std::make_shared< RTT::OutputPort<double> >("rms_" + name);
             norm_port = std::make_shared< RTT::OutputPort<double> >("norm_" + name);
@@ -38,7 +42,7 @@ namespace data_analysis{
 
         void reset(const int window_size){
             rms_cmp.reset();
-            rms_cmp = std::make_shared<RMS>(window_size);
+            rms_cmp = std::make_shared<RMS>(window_size, accumulate);
         }
 
     };
@@ -65,6 +69,7 @@ namespace data_analysis{
         base::VectorXd input_data;
         std::vector< std::shared_ptr<RMSCmpInterface> > cmp_interfaces;
         int window_size;
+        base::VectorXd n_data;
 
         /** Process new data samples*/
         virtual void process();
