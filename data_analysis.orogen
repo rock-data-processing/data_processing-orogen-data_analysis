@@ -1,9 +1,9 @@
 name "data_analysis"
 
-import_types_from "base"
-import_types_from "data_analysis/sigmoid.hpp"
 using_library "data_analysis"
 using_task_library "type_to_vector"
+import_types_from "base"
+import_types_from "data_analysis/sigmoid.hpp"
 
 task_context "AbsTask", subclasses: "type_to_vector::BaseTask" do
 
